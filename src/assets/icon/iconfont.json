@@ -1,0 +1,16 @@
+{
+  "id": "2246818",
+  "name": "no name",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "589086",
+      "name": "Hadoop",
+      "font_class": "hadoop29",
+      "unicode": "e70a",
+      "unicode_decimal": 59146
+    }
+  ]
+}

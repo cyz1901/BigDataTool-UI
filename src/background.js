@@ -5,6 +5,7 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
+
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
@@ -13,8 +14,8 @@ protocol.registerSchemesAsPrivileged([
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
-    width: 1600,
-    height: 1200,
+    width: 1024,
+    height: 768,
     // fullscreen: true,
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
@@ -22,7 +23,7 @@ async function createWindow() {
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
     }
   })
-
+  win.setMenu(null)
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
@@ -62,6 +63,7 @@ app.on('ready', async () => {
   //   }
   // }
   createWindow()
+  // require('./menu/menu.js')
 })
 
 // Exit cleanly on request from parent process in development mode.

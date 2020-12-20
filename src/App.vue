@@ -1,84 +1,67 @@
 <template>
   <v-app>
     <v-navigation-drawer app>
-      <v-treeview
-        v-model="tree"
-        :open="initiallyOpen"
-        :items="items"
-        activatable
-        item-key="name"
-        open-on-click
+      <v-list-item>
+        <v-list-item-content style="height: 48px">
+          <v-list-item-title >
+            Application
+          </v-list-item-title>
+          <v-list-item-subtitle>
+            subtext
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-divider></v-divider>
+
+      <v-list
+        dense
+        nav
       >
-        <template v-slot:prepend="{ item, open }">
-          <v-icon v-if="!item.file">
-            {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
-          </v-icon>
-          <v-icon v-else>
-            {{ files[item.file] }}
-          </v-icon>
-        </template>
-      </v-treeview>
+        <v-list-item-group
+          v-model="selectedItem"
+          color="primary"
+        >
+          <v-list-item
+            v-for="item in items"
+            :key="item.title"
+            :to="item.herf"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon x-large>{{ item.icon }}</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item-content>
+        </v-list-item>
+          </v-list-item-group>
+      </v-list>
+
     </v-navigation-drawer>
 
-    <v-app-bar app>
+    <v-app-bar app dense="true">
       <!-- -->
-    </v-app-bar><!-- 根据应用程序组件调整内容大小 --><v-main><!-- 为应用程序提供正确的插槽 --><v-container fluid><!-- 如果使用vue-router --><router-view></router-view>
-  </v-container>
+    </v-app-bar><!-- 根据应用程序组件调整内容大小 -->
+    <v-main><!-- 为应用程序提供正确的插槽 -->
+<!--      <v-container fluid>-->
+        <router-view></router-view>
+<!--      </v-container>-->
   </v-main>
-
     <v-footer app>
-      <!-- -->
+      <button>hello</button>
     </v-footer>
   </v-app>
-<!--  <v-app>-->
-<!--    <v-app-bar-->
-<!--      app-->
-<!--      color="primary"-->
-<!--      dark-->
-<!--    >-->
-<!--      <div class="d-flex align-center">-->
-<!--        <v-img-->
-<!--          alt="Vuetify Logo"-->
-<!--          class="shrink mr-2"-->
-<!--          contain-->
-<!--          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"-->
-<!--          transition="scale-transition"-->
-<!--          width="40"-->
-<!--        />-->
-
-<!--        <v-img-->
-<!--          alt="Vuetify Name"-->
-<!--          class="shrink mt-1 hidden-sm-and-down"-->
-<!--          contain-->
-<!--          min-width="100"-->
-<!--          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"-->
-<!--          width="100"-->
-<!--        />-->
-<!--      </div>-->
-
-<!--      <v-spacer></v-spacer>-->
-
-<!--      <v-btn-->
-<!--        href="https://github.com/vuetifyjs/vuetify/releases/latest"-->
-<!--        target="_blank"-->
-<!--        text-->
-<!--      >-->
-<!--        <span class="mr-2">Latest Release</span>-->
-<!--        <v-icon>mdi-open-in-new</v-icon>-->
-<!--      </v-btn>-->
-<!--    </v-app-bar>-->
-
-<!--    <v-main>-->
-<!--      <router-view/>-->
-<!--    </v-main>-->
-<!--  </v-app>-->
 </template>
 
 <script>
-
+// import hadoopIcon from "../assets/hadoop.svg"
 export default {
+  // components:{
+  //   hadoopIcon
+  // },
   name: 'App',
-
   data: () => ({
     initiallyOpen: ['public'],
     files: {
@@ -91,59 +74,32 @@ export default {
       txt: 'mdi-file-document-outline',
       xls: 'mdi-file-excel',
     },
+    selectedItem: 0,
     tree: [],
     items: [
-      {
-        name: '.git',
-      },
-      {
-        name: 'node_modules',
-      },
-      {
-        name: 'public',
-        children: [
-          {
-            name: 'static',
-            children: [{
-              name: 'logo.png',
-              file: 'png',
-            }],
-          },
-          {
-            name: 'favicon.ico',
-            file: 'png',
-          },
-          {
-            name: 'index.html',
-            file: 'html',
-          },
-        ],
-      },
-      {
-        name: '.gitignore',
-        file: 'txt',
-      },
-      {
-        name: 'babel.config.js',
-        file: 'js',
-      },
-      {
-        name: 'package.json',
-        file: 'json',
-      },
-      {
-        name: 'README.md',
-        file: 'md',
-      },
-      {
-        name: 'vue.config.js',
-        file: 'js',
-      },
-      {
-        name: 'yarn.lock',
-        file: 'txt',
-      },
+      { title: 'Hadoop集群', icon: 'iconfont icon-hadoop29', herf:'hadoop' },
+      { title: 'Photos', icon: 'mdi-image', herf:'webtest' },
+      { title: 'About', icon: 'mdi-help-box', herf:'about' },
     ],
+    right: null,
   }),
-};
+  methods: {
+    on() {
+      const BrowserWindow = require('electron').remote.BrowserWindow;
+
+      var win = new BrowserWindow({
+        width: 200,
+        height: 200,
+        titleBarStyle: 'hidden',
+        frame: false
+      });
+      win.on('closed', function() {
+        win = null;
+      });
+
+      win.loadURL('https://github.com');
+      win.show();
+    }
+  }
+}
 </script>
