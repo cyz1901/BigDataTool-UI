@@ -4,7 +4,7 @@ module.exports = {
       nodeIntegration: true
     }
   },
-  "transpileDependencies": [
-    "vuetify"
+  'transpileDependencies': [
+    'vuetify'
   ]
 }

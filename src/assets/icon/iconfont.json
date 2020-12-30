@@ -1,14 +1,28 @@
 {
   "id": "2246818",
-  "name": "no name",
+  "name": "MyProject",
   "font_family": "iconfont",
   "css_prefix_text": "icon-",
   "description": "",
   "glyphs": [
     {
+      "icon_id": "13418357",
+      "name": "mountain-15",
+      "font_class": "mountain-",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    },
+    {
+      "icon_id": "6487820",
+      "name": "集群",
+      "font_class": "colony",
+      "unicode": "e67a",
+      "unicode_decimal": 59002
+    },
+    {
       "icon_id": "589086",
       "name": "Hadoop",
-      "font_class": "hadoop29",
+      "font_class": "hadoop",
       "unicode": "e70a",
       "unicode_decimal": 59146
     }

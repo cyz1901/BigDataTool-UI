@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer app>
+    <v-navigation-drawer  absolute="true" app>
       <v-list-item>
         <v-list-item-content style="height: 48px">
           <v-list-item-title >
@@ -45,12 +45,15 @@
       <!-- -->
     </v-app-bar><!-- 根据应用程序组件调整内容大小 -->
     <v-main><!-- 为应用程序提供正确的插槽 -->
-<!--      <v-container fluid>-->
         <router-view></router-view>
-<!--      </v-container>-->
   </v-main>
     <v-footer app>
-      <button>hello</button>
+      <v-tooltip top>
+        <template v-slot:activator="{ on, attrs }">
+          <v-icon  color="green"  v-bind="attrs" v-on="on">{{ footerItems }}</v-icon>
+        </template>
+        <span>Left tooltip</span>
+      </v-tooltip>
     </v-footer>
   </v-app>
 </template>
@@ -72,33 +75,34 @@ export default {
       pdf: 'mdi-file-pdf',
       png: 'mdi-file-image',
       txt: 'mdi-file-document-outline',
-      xls: 'mdi-file-excel',
+      xls: 'mdi-file-excel'
     },
     selectedItem: 0,
     tree: [],
     items: [
-      { title: 'Hadoop集群', icon: 'iconfont icon-hadoop29', herf:'hadoop' },
-      { title: 'Photos', icon: 'mdi-image', herf:'webtest' },
-      { title: 'About', icon: 'mdi-help-box', herf:'about' },
+      { title: 'Colony', icon: 'iconfont icon-colony', herf: 'clusters' },
+      { title: 'Photos', icon: 'mdi-image', herf: 'webtest' },
+      { title: 'About', icon: 'mdi-help-box', herf: 'about' }
     ],
-    right: null,
+    footerItems: 'mdi-help-box',
+    right: null
   }),
   methods: {
-    on() {
-      const BrowserWindow = require('electron').remote.BrowserWindow;
+    on () {
+      const BrowserWindow = require('electron').remote.BrowserWindow
 
       var win = new BrowserWindow({
         width: 200,
         height: 200,
         titleBarStyle: 'hidden',
         frame: false
-      });
-      win.on('closed', function() {
-        win = null;
-      });
+      })
+      win.on('closed', function () {
+        win = null
+      })
 
-      win.loadURL('https://github.com');
-      win.show();
+      win.loadURL('https://github.com')
+      win.show()
     }
   }
 }
