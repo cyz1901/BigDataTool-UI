@@ -3,9 +3,10 @@
     <v-app-bar
       color="grey darken-3"
       dark
-      dense="true"
+      :dense="true"
       style="height: 48px"
     >
+<!--Dialog      -->
       <v-dialog
         v-model="dialog"
         persistent
@@ -75,39 +76,14 @@
 
     </v-app-bar>
     <v-container fluid>
-      <v-row dense>
+      <v-row :dense="true">
+<!--Card        -->
         <v-col
           v-for="card in cards"
           :key="card.title"
           :cols="card.flex"
           style="margin-top: 20px"
         >
-<!--          <v-card>
-            <v-img
-              :src="card.src"
-              class="white&#45;&#45;text align-end"
-              gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-              height="200px"
-            >
-              <v-card-title v-text="card.title"></v-card-title>
-            </v-img>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-
-              <v-btn icon>
-                <v-icon>mdi-heart</v-icon>
-              </v-btn>
-
-              <v-btn icon>
-                <v-icon>mdi-bookmark</v-icon>
-              </v-btn>
-
-              <v-btn icon>
-                <v-icon>mdi-share-variant</v-icon>
-              </v-btn>
-            </v-card-actions>
-          </v-card>-->
           <v-card
             class="mx-auto"
             max-width="344"
@@ -136,6 +112,7 @@
                 outlined
                 rounded
                 text
+                @click="onDetailCluster(card)"
               >
                 Button
               </v-btn>
@@ -144,6 +121,7 @@
         </v-col>
       </v-row>
     </v-container>
+    <router-view></router-view>
   </v-main>
 </template>
 
@@ -154,14 +132,20 @@ export default {
     collapseOnScroll: true,
     dialog: false,
     cards: [
-      { title: 'Pre-fab homes', src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg', flex: 3 },
-      { title: 'Favorite road trips', src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg', flex: 3 },
-      { title: 'Best airlines', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg', flex: 3 },
-      { title: 'Best airlines', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg', flex: 3 },
-      { title: 'Best airlines', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg', flex: 3 },
-      { title: 'Best airlines', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg', flex: 3 },
+      { title: 'Pre-fab homes', src: '/webtest', flex: 3 },
+      { title: 'Favorite road trips', src: '/clusters/colony', flex: 3 },
+      { title: '1', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg', flex: 3 },
+      { title: '2', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg', flex: 3 },
+      { title: '3', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg', flex: 3 },
+      { title: '4', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg', flex: 3 }
     ]
-  })
+  }),
+  methods: {
+    onDetailCluster (card) {
+      console.log(window.location.href)
+      this.$router.replace({name:'colony'})
+    }
+  }
 }
 </script>
 

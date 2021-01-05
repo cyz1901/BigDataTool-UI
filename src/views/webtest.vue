@@ -9,6 +9,7 @@
 
 <script>
 // import thrift from 'thrift'
+// import { ttypes } from '../gen-nodejs/hadoopDownload_types'
 export default {
   name: 'webtest',
   data: () => ({
@@ -19,37 +20,37 @@ export default {
   },
   methods: {
     init () {
-
+      console.log("yes")
     },
 
     onn () {
       const thrift = require('thrift')
-      var HelloWorldService = require('../gen-nodejs/HelloWorldService')
-      var ttypes = require('../gen-nodejs/hello_types')
+      var HadoopDownloadService = require('../gen-nodejs/HadoopDownloadService')
+      var ttypes = require('../gen-nodejs/hadoopDownload_types')
 
-      var transport = thrift.TBinaryProtocol
-      console.log(transport)
-      // var protocol = thrift.TBinaryProtocol
-      // console.log(typeof thrift)
-      console.log(typeof thrift)
-      var tt = thrift.createConnection('localhost', 9090)
+      var transport = thrift.TBufferedTransport;
+      var protocol = thrift.TBinaryProtocol;
 
-      // connection.on('error', function(err) {
-      //   assert(false, err)
-      // })
+      var connection = thrift.createConnection("127.0.0.1", 9090, {
+        transport : transport,
+        protocol : protocol
+      });
 
-      // client.say("LOL", function(err, message) {
-      //   console.log('15-10=' + message);
 
-      //   client.getStruct(1, function(err, message){
-      //     console.log('Check log: ' + message.value);
+      var client = thrift.createClient(HadoopDownloadService, connection);
 
-      //     //close the connection once we're done
-      //     connection.end();
-      //   })
-      // })
+      console.log(client)
 
-      // console.log(thriftConnection)
+      client.get("hadoop", function(err, message) {
+        if (err) {
+          console.log("InvalidOperation " + err);
+          connection.end()
+        } else {
+          console.log('Whoa? You know how to divide by zero?');
+          console.log(message.hadoopMap)
+          connection.end()
+        }
+      })
     }
   }
 }

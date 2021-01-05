@@ -1,6 +1,6 @@
 <template>
-  <v-app>
-    <v-navigation-drawer  absolute="true" app>
+<!--  <v-app>
+    <v-navigation-drawer  :absolute="true" app>
       <v-list-item>
         <v-list-item-content style="height: 48px">
           <v-list-item-title >
@@ -15,7 +15,7 @@
       <v-divider></v-divider>
 
       <v-list
-        dense
+        :dense="true"
         nav
       >
         <v-list-item-group
@@ -41,10 +41,10 @@
 
     </v-navigation-drawer>
 
-    <v-app-bar app dense="true">
-      <!-- -->
-    </v-app-bar><!-- 根据应用程序组件调整内容大小 -->
-    <v-main><!-- 为应用程序提供正确的插槽 -->
+    <v-app-bar app :dense="true">
+      &lt;!&ndash; &ndash;&gt;
+    </v-app-bar>&lt;!&ndash; 根据应用程序组件调整内容大小 &ndash;&gt;
+    <v-main>&lt;!&ndash; 为应用程序提供正确的插槽 &ndash;&gt;
         <router-view></router-view>
   </v-main>
     <v-footer app>
@@ -55,7 +55,8 @@
         <span>Left tooltip</span>
       </v-tooltip>
     </v-footer>
-  </v-app>
+  </v-app>-->
+  <router-view></router-view>
 </template>
 
 <script>
@@ -65,7 +66,7 @@ export default {
   //   hadoopIcon
   // },
   name: 'App',
-  data: () => ({
+  /*data: () => ({
     initiallyOpen: ['public'],
     files: {
       html: 'mdi-language-html5',
@@ -104,6 +105,6 @@ export default {
       win.loadURL('https://github.com')
       win.show()
     }
-  }
+  }*/
 }
 </script>
