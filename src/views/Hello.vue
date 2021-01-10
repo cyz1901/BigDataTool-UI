@@ -3,17 +3,16 @@
 </template>
 
 <script>
-  import HelloWorld from '../components/HelloWorld'
+import HelloWorld from "../components/HelloWorld";
 
-  export default {
-    name: "Hello",
+export default {
+  name: "Hello",
 
-    components: {
-      HelloWorld,
-    },
-  }
+  components: {
+    HelloWorld,
+  },
+};
 </script>
 
 <style scoped>
-
 </style>
