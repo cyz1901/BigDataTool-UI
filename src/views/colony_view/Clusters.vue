@@ -19,7 +19,7 @@
             v-bind="attrs"
             v-on="on"
           >
-            Open Dialog
+            新建一个集群
           </v-btn>
         </template>
         <v-card>
