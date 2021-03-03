@@ -6,6 +6,7 @@ import Index from '@/views/colony_view/index.vue'
 import webtest from '@/views/webtest'
 import Clusters from '@/views/colony_view/Clusters.vue'
 import Colony from '@/views/colony_view/Colony.vue'
+import ClustersHelp from "@/views/colony_view/ClustersHelp";
 
 Vue.use(Router)
 
@@ -40,14 +41,14 @@ const routes = [
             path: 'colony',
             name: 'colony',
             component: Colony
+          },
+          {
+            path: 'clustersHelp',
+            name: 'clustersHelp',
+            component: ClustersHelp
           }
         ]
       },
-      // {
-      //   path: '/colony',
-      //   name: 'colony',
-      //   component: Colony,
-      // },
       {
         path: '/webtest',
         name: 'webtest',

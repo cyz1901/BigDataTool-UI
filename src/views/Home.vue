@@ -30,7 +30,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app :dense="true"> <!-- --> </v-app-bar
+    <v-app-bar app :dense="true" :flat="true"> <!-- --> </v-app-bar
     ><!-- 根据应用程序组件调整内容大小 -->
     <v-main
       ><!-- 为应用程序提供正确的插槽 -->
