@@ -58,19 +58,16 @@
     <v-stepper-content step="3">
       <v-card color="grey darken-4" class="mb-12">
         <v-card-text>
-          <v-progress-linear
-            color="primary"
-            buffer-value="0"
-            stream
-            style="margin-bottom: 30px"
-          ></v-progress-linear>
-          <v-textarea
-            outlined
-            name="input-7-4"
-            label="输出日志"
-            value="The Woodman set to work at once, and so sharp was his axe that the tree was soon chopped nearly through."
-            :disabled="true"
-          ></v-textarea>
+          <v-data-table
+            :headers="componentMsg.header"
+            :items="componentMsg.data"
+            hide-default-footer
+          >
+          <v-select
+          :items="nodes"
+          label="Standard"
+          ></v-select>
+          </v-data-table>
         </v-card-text>
       </v-card>
       <v-btn color="primary" @click="e6 = 4"> Continue </v-btn>
@@ -142,7 +139,29 @@ export default {
       },
       nodeTypeForm: {
         nameNode: ''
-      }
+      },
+      componentMsg: {
+        header: [
+          {
+            text: 'Name',
+            value: 'name'
+          },
+          {
+            text: 'Des',
+            value: 'des'
+          },
+          { text: 'Version',
+            value: 'version' 
+          },
+          { text: 'Actions', value: 'actions', sortable: false }
+        ],
+        data: [
+          {
+            name: 'hadoop',
+            des: 'xxxxx'
+          }
+        ]
+      },      
     }
   }
 }
