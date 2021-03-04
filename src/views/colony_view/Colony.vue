@@ -63,15 +63,17 @@
             :items="componentMsg.data"
             hide-default-footer
           >
-          <v-select
-          :items="nodes"
-          label="Standard"
-          ></v-select>
+            <template v-slot:item.version="{ item }" style="width: 100px">
+              <v-select
+                :items="nodes"
+                label="Standard"
+              ></v-select>
+            </template>
           </v-data-table>
         </v-card-text>
       </v-card>
       <v-btn color="primary" @click="e6 = 4"> Continue </v-btn>
-      <v-btn text> Cancel </v-btn>
+      <v-btn text @click="e6 = 2"> Cancel </v-btn>
     </v-stepper-content>
 
     <v-stepper-step :complete="e6 > 4" step="4">
@@ -151,9 +153,8 @@ export default {
             value: 'des'
           },
           { text: 'Version',
-            value: 'version' 
+            value: 'version'
           },
-          { text: 'Actions', value: 'actions', sortable: false }
         ],
         data: [
           {
@@ -161,7 +162,7 @@ export default {
             des: 'xxxxx'
           }
         ]
-      },      
+      },
     }
   }
 }
