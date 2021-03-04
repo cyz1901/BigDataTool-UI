@@ -15,16 +15,18 @@
                 clearable
                 style="width: 250px"
               ></v-text-field>
-              <v-select
-                label="选择需要部署的节点"
-                multiple
-                :items="nodes"
-                v-model="configForm.nodeList"
-                chips
-                hint="What are the target regions"
-                persistent-hint
-                style="width: 400px"
-              ></v-select>
+
+              <v-data-table
+                :headers="nodesMsg.header"
+                :items="nodesMsg.data"
+                hide-default-footer
+              >
+                <template v-slot:item.choose="{ item }">
+                  <v-simple-checkbox
+                    v-model="item.choose"
+                  ></v-simple-checkbox>
+                </template>
+              </v-data-table>
             </v-form>
           </v-container>
         </v-card-text>
@@ -36,7 +38,7 @@
     <v-stepper-step :complete="e6 > 2" step="2"> 配置节点类型 </v-stepper-step>
     <v-stepper-content step="2">
       <v-card color="grey darken-4" class="mb-12">
-        <v-card-text>
+         <v-card-text>
           <form ref="nodeTypeForm">
             <v-select
               label="选择NameNode"
@@ -63,7 +65,12 @@
             :items="componentMsg.data"
             hide-default-footer
           >
-            <template v-slot:item.version="{ item }" style="width: 100px">
+            <template v-slot:item.choose="{ item }">
+              <v-simple-checkbox
+                v-model="item.choose"
+              ></v-simple-checkbox>
+            </template>
+            <template v-slot:item.version="{ item }">
               <v-select
                 :items="nodes"
                 label="Standard"
@@ -77,7 +84,7 @@
     </v-stepper-content>
 
     <v-stepper-step :complete="e6 > 4" step="4">
-      Select an ad format and name ad unit
+      download and fenfa zujian 
     </v-stepper-step>
     <v-stepper-content step="4">
       <v-card color="grey darken-4" class="mb-12">
@@ -109,15 +116,21 @@
             color="primary"
             buffer-value="0"
             stream
-            style="margin-bottom: 30px"
+            style="margin-bottom: 30px; margin-top: 50px"
           ></v-progress-linear>
-          <v-textarea
-            outlined
-            name="input-7-4"
-            label="输出日志"
-            value="The Woodman set to work at once, and so sharp was his axe that the tree was soon chopped nearly through."
-            :disabled="true"
-          ></v-textarea>
+          <v-expansion-panels accordion>
+              <v-expansion-panel
+                v-for="(item,i) in 5"
+                :key="i"
+              >
+                <v-expansion-panel-header>
+                  Item
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
         </v-card-text>
       </v-card>
       <v-btn color="primary" @click="e6 = 5"> Continue </v-btn>
@@ -132,7 +145,6 @@ export default {
   data () {
     return {
       e6: 1,
-      nodes: ['node1', 'node2'],
       name: 'helloworld',
       componentJs: {},
       configForm: {
@@ -142,8 +154,41 @@ export default {
       nodeTypeForm: {
         nameNode: ''
       },
+      nodesMsg: {
+        header: [
+          {
+            name: 'Choose',
+            value: 'choose',
+            sortable: false,
+            align: 'start'
+
+          },
+          {
+            text: 'HostName',
+            value: 'hostname'
+          },
+          {
+            text: 'Ip',
+            value: 'ip'
+          }
+        ],
+        data: [
+          {
+            hostname: 'node1',
+            ip: '196.168.1.1',
+            choose: false
+          }
+        ]
+      },
       componentMsg: {
         header: [
+          {
+            name: 'Choose',
+            value: 'choose',
+            sortable: false,
+            align: 'start'
+
+          },
           {
             text: 'Name',
             value: 'name'
@@ -153,13 +198,16 @@ export default {
             value: 'des'
           },
           { text: 'Version',
-            value: 'version'
+            value: 'version',
+            width: 300
           },
         ],
         data: [
           {
             name: 'hadoop',
-            des: 'xxxxx'
+            des: 'xxxxx',
+            version: '',
+            choose: true
           }
         ]
       },

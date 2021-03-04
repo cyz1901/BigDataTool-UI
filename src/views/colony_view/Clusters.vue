@@ -23,7 +23,7 @@
 <!--Card        -->
           <v-card
             class="mx-auto"
-            max-width="344"
+            height="50%"
             outlined
           >
             <v-list-item three-line>

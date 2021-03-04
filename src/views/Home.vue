@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer :absolute="true" app>
+    <v-navigation-drawer app style="height: 100%">
       <v-list-item>
         <v-list-item-content style="height: 48px">
           <v-list-item-title> Application </v-list-item-title>
@@ -36,7 +36,7 @@
       ><!-- 为应用程序提供正确的插槽 -->
       <router-view></router-view>
     </v-main>
-    <v-footer app>
+    <v-bottom-navigation app height="30px" style="justify-content:left">
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
           <v-icon color="green" v-bind="attrs" v-on="on">{{
@@ -45,7 +45,7 @@
         </template>
         <span>Left tooltip</span>
       </v-tooltip>
-    </v-footer>
+    </v-bottom-navigation>
   </v-app>
 </template>
 
