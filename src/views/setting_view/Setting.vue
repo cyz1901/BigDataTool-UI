@@ -1,7 +1,5 @@
 <template>
-  <v-form>
-      
-  </v-form>
+<p>setting</p>
 </template>
 
 <script>

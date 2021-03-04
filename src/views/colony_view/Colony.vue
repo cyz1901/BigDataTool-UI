@@ -5,17 +5,22 @@
       <small>Summarize if needed</small>
     </v-stepper-step>
     <v-stepper-content step="1">
-      <v-card color="grey darken-4" class="mb-12">
+      <v-card color="grey darken-4" class="card">
         <v-card-text>
           <v-container fluid>
             <v-form ref="configForm">
+              <h3>
+                输入集群名称
+              </h3>
               <v-text-field
                 label="集群名称"
                 v-model="configForm.name"
                 clearable
                 style="width: 250px"
               ></v-text-field>
-
+              <h3>
+                选择需要部署的节点
+              </h3>
               <v-data-table
                 :headers="nodesMsg.header"
                 :items="nodesMsg.data"
@@ -31,35 +36,39 @@
           </v-container>
         </v-card-text>
       </v-card>
-      <v-btn color="primary" @click="e6 = 2"> 继续 </v-btn>
-      <v-btn text> 返回 </v-btn>
+      <v-btn color="primary" @click="e6 = 2" class="button"> 继续 </v-btn>
     </v-stepper-content>
 
     <v-stepper-step :complete="e6 > 2" step="2"> 配置节点类型 </v-stepper-step>
     <v-stepper-content step="2">
-      <v-card color="grey darken-4" class="mb-12">
+      <v-card color="grey darken-4" class="card">
          <v-card-text>
           <form ref="nodeTypeForm">
+            <h3>
+              选择NameNode的节点
+            </h3>
             <v-select
-              label="选择NameNode"
+              label="NameNode"
               :items="nodes"
               v-model="configForm.nameNode"
               chips
-              hint="What are the target regions"
               persistent-hint
               style="width: 400px"
             ></v-select>
           </form>
         </v-card-text>
       </v-card>
-      <v-btn color="primary" @click="e6 = 3"> Continue </v-btn>
-      <v-btn text> Cancel </v-btn>
+      <v-btn color="primary" @click="e6 = 3" class="button"> 继续 </v-btn>
+      <v-btn color="secondary" class="button" @click="e6 = 1"> 上一步 </v-btn>
     </v-stepper-content>
 
     <v-stepper-step :complete="e6 > 3" step="3"> 选择组件 </v-stepper-step>
     <v-stepper-content step="3">
       <v-card color="grey darken-4" class="mb-12">
         <v-card-text>
+          <h3>
+            选择需要部署的组件
+          </h3>
           <v-data-table
             :headers="componentMsg.header"
             :items="componentMsg.data"
@@ -79,36 +88,43 @@
           </v-data-table>
         </v-card-text>
       </v-card>
-      <v-btn color="primary" @click="e6 = 4"> Continue </v-btn>
-      <v-btn text @click="e6 = 2"> Cancel </v-btn>
+      <v-btn color="primary" @click="e6 = 4" class="button"> 继续 </v-btn>
+      <v-btn color="secondary" @click="e6 = 2" class="button"> 上一步 </v-btn>
     </v-stepper-content>
 
     <v-stepper-step :complete="e6 > 4" step="4">
-      download and fenfa zujian 
+      下载并分发组件
     </v-stepper-step>
     <v-stepper-content step="4">
       <v-card color="grey darken-4" class="mb-12">
         <v-card-text>
-          <v-progress-linear
-            color="primary"
-            buffer-value="0"
-            stream
-            style="margin-bottom: 30px"
-          ></v-progress-linear>
-          <v-textarea
-            outlined
-            name="input-7-4"
-            label="输出日志"
-            value="The Woodman set to work at once, and so sharp was his axe that the tree was soon chopped nearly through."
-            :disabled="true"
-          ></v-textarea>
+          <v-expansion-panels accordion >
+            <v-expansion-panel
+            >
+              <v-expansion-panel-header style="height: 100px">
+                <download-progress name="总" download-progress="5"></download-progress>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                  <v-list
+                  v-for="node in DownloadMsg.data"
+                  :key="node.name"
+                  >
+                    <v-container>
+                      <h6>{{node.name}}下载进度</h6>
+                      <v-progress-linear style="width: 90%">
+                      </v-progress-linear>
+                    </v-container>
+                  </v-list>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
         </v-card-text>
       </v-card>
-      <v-btn color="primary" @click="e6 = 5"> Continue </v-btn>
-      <v-btn text> Cancel </v-btn>
+      <v-btn color="primary" @click="e6 = 5" class="button"> 继续 </v-btn>
+      <v-btn color="secondary" class="button" @click="e6 = 3"> 上一步 </v-btn>
     </v-stepper-content>
 
-    <v-stepper-step step="5"> View setup instructions </v-stepper-step>
+    <v-stepper-step step="5"> 构建集群 </v-stepper-step>
     <v-stepper-content step="5">
       <v-card color="grey darken-4" class="mb-12">
         <v-card-text>
@@ -133,15 +149,20 @@
             </v-expansion-panels>
         </v-card-text>
       </v-card>
-      <v-btn color="primary" @click="e6 = 5"> Continue </v-btn>
-      <v-btn text> Cancel </v-btn>
+      <v-btn color="primary" @click="e6 = 5" class="button"> 继续 </v-btn>
+      <v-btn color="secondary"  class="button" @click="e6 = 4"> 上一步 </v-btn>
     </v-stepper-content>
   </v-stepper>
 </template>
 
 <script>
+import DownloadProgress from "@/components/DownloadProgress";
 export default {
+
   name: 'colony',
+  components: {
+    DownloadProgress
+  },
   data () {
     return {
       e6: 1,
@@ -211,10 +232,31 @@ export default {
           }
         ]
       },
+      DownloadMsg: {
+        data: [
+          {
+            name: 'node1'
+          },
+          {
+            name: 'node2'
+          }
+        ]
+      }
     }
   }
 }
 </script>
 
 <style scoped>
+.card{
+  margin-bottom: 20px;
+}
+.button{
+  width: 100px;
+  margin-right: 30px;
+}
+h3{
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
 </style>

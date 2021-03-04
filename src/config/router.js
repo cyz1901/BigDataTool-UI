@@ -2,11 +2,13 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/views/Home.vue'
 import Hello from '@/views/Hello'
-import Index from '@/views/colony_view/index.vue'
+import ColonyIndex from '@/views/colony_view/index.vue'
 import webtest from '@/views/webtest'
 import Clusters from '@/views/colony_view/Clusters.vue'
 import Colony from '@/views/colony_view/Colony.vue'
 import ClustersHelp from "@/views/colony_view/ClustersHelp";
+import SettingView from "@/views/setting_view/index"
+import Setting from "@/views/setting_view/Setting";
 
 Vue.use(Router)
 
@@ -26,11 +28,7 @@ const routes = [
       },
       {
         path: '/clustersView',
-        // name: 'clusters',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: Index,
+        component: ColonyIndex,
         children: [
           {
             path: '',
@@ -52,10 +50,18 @@ const routes = [
       {
         path: '/webtest',
         name: 'webtest',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
         component: webtest
+      },
+      {
+        path: '/settingView',
+        component: SettingView,
+        children: [
+          {
+            path: '',
+            name: 'setting',
+            component: Setting
+          }
+        ]
       }
     ]
   }

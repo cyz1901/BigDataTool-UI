@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "11719493",
+      "name": "设置",
+      "font_class": "ziyuan",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "8922337",
+      "name": "心跳",
+      "font_class": "xintiao",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
       "icon_id": "13418357",
       "name": "mountain-15",
       "font_class": "mountain-",

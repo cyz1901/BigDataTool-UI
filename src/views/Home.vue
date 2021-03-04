@@ -67,7 +67,8 @@ export default {
     selectedItem: 0,
     tree: [],
     items: [
-      { title: 'Colony', icon: 'iconfont icon-colony', herf: '/clustersView' },
+      { title: '集群', icon: 'iconfont icon-colony', herf: '/clustersView' },
+      { title: '设置', icon: 'iconfont icon-ziyuan', herf: '/settingView' },
       { title: 'Photos', icon: 'mdi-image', herf: '/webtest' },
       { title: 'About', icon: 'mdi-help-box', herf: '/about' }
       // { title: 'Tbout', icon: 'mdi-help-box', herf: '/clusters/colony' }
