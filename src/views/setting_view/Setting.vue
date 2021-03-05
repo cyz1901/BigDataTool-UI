@@ -20,6 +20,7 @@
     ></v-text-field>
     </v-col>
   </v-row>
+  
   </v-form>
 </v-container>
 </template>
@@ -27,6 +28,9 @@
 <script>
 export default {
   name: 'Setting',
+  mounted() {
+    this.init()
+  },
   data: () => ({
     settingForm: {
       data: [
@@ -40,7 +44,15 @@ export default {
         }
       ]
     }
-  })
+  }),
+  methods: {
+    init() {
+      this.$axios.get('/api/v1/setting').then(res => {
+      console.log(res.data)
+      this.nodesMsg.data = res.data.nodesMsg.data
+    })
+    }
+  }
 }
 </script>
 

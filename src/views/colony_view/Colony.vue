@@ -1,20 +1,19 @@
 <template>
-  <v-stepper v-model="e6" vertical>
-    <v-stepper-step :complete="e6 > 1" step="1">
+  <v-stepper v-model="step" vertical>
+    <v-stepper-step :complete="step > 1" step="1">
       集群初始化
-      <small>Summarize if needed</small>
     </v-stepper-step>
     <v-stepper-content step="1">
       <v-card color="grey darken-4" class="card">
         <v-card-text>
           <v-container fluid>
-            <v-form ref="configForm">
+            <v-form ref="colonyInitForm">
               <h3>
                 输入集群名称
               </h3>
               <v-text-field
                 label="集群名称"
-                v-model="configForm.name"
+                v-model="colonyInitForm.name"
                 clearable
                 style="width: 250px"
               ></v-text-field>
@@ -36,10 +35,10 @@
           </v-container>
         </v-card-text>
       </v-card>
-      <v-btn color="primary" @click="e6 = 2" class="button"> 继续 </v-btn>
+      <v-btn color="primary" @click="colonyInitNext" class="button"> 继续 </v-btn>
     </v-stepper-content>
 
-    <v-stepper-step :complete="e6 > 2" step="2"> 配置节点类型 </v-stepper-step>
+    <v-stepper-step :complete="step > 2" step="2"> 配置节点类型 </v-stepper-step>
     <v-stepper-content step="2">
       <v-card color="grey darken-4" class="card">
          <v-card-text>
@@ -58,11 +57,11 @@
           </form>
         </v-card-text>
       </v-card>
-      <v-btn color="primary" @click="e6 = 3" class="button"> 继续 </v-btn>
-      <v-btn color="secondary" class="button" @click="e6 = 1"> 上一步 </v-btn>
+      <v-btn color="primary" @click="nodeTypeNext" class="button"> 继续 </v-btn>
+      <v-btn color="secondary" class="button" @click="nodeTypeBack"> 上一步 </v-btn>
     </v-stepper-content>
 
-    <v-stepper-step :complete="e6 > 3" step="3"> 选择组件 </v-stepper-step>
+    <v-stepper-step :complete="step > 3" step="3"> 选择组件 </v-stepper-step>
     <v-stepper-content step="3">
       <v-card color="grey darken-4" class="mb-12">
         <v-card-text>
@@ -89,11 +88,11 @@
           </v-data-table>
         </v-card-text>
       </v-card>
-      <v-btn color="primary" @click="e6 = 4" class="button"> 继续 </v-btn>
-      <v-btn color="secondary" @click="e6 = 2" class="button"> 上一步 </v-btn>
+      <v-btn color="primary" @click="componentNext" class="button"> 继续 </v-btn>
+      <v-btn color="secondary" @click="componentBack" class="button"> 上一步 </v-btn>
     </v-stepper-content>
 
-    <v-stepper-step :complete="e6 > 4" step="4">
+    <v-stepper-step :complete="step > 4" step="4">
       下载并分发组件
     </v-stepper-step>
     <v-stepper-content step="4">
@@ -121,8 +120,8 @@
           </v-expansion-panels>
         </v-card-text>
       </v-card>
-      <v-btn color="primary" @click="e6 = 5" class="button"> 继续 </v-btn>
-      <v-btn color="secondary" class="button" @click="e6 = 3"> 上一步 </v-btn>
+      <v-btn color="primary" @click="downloadNext" class="button"> 继续 </v-btn>
+      <v-btn color="secondary" class="button" @click="downloadBack"> 上一步 </v-btn>
     </v-stepper-content>
 
     <v-stepper-step step="5"> 构建集群 </v-stepper-step>
@@ -150,8 +149,8 @@
             </v-expansion-panels>
         </v-card-text>
       </v-card>
-      <v-btn color="primary" @click="e6 = 5" class="button"> 继续 </v-btn>
-      <v-btn color="secondary"  class="button" @click="e6 = 4"> 上一步 </v-btn>
+      <v-btn color="primary" @click="step = 5" class="button"> 继续 </v-btn>
+      <v-btn color="secondary"  class="button" @click="step = 4"> 上一步 </v-btn>
     </v-stepper-content>
   </v-stepper>
 </template>
@@ -166,11 +165,11 @@ export default {
   },
   data () {
     return {
-      e6: 1,
+      step: 1,
       name: 'helloworld',
       componentJs: {},
       nodes: [],
-      configForm: {
+      colonyInitForm: {
         name: '',
         nodeList: []
       },
@@ -246,6 +245,40 @@ export default {
         ]
       }
     }
+  },
+  mounted() {
+    this.init()
+  },
+  methods: {
+    init() {
+      this.$axios.get('/api/v1/colony').then(res => {
+      console.log(res.data)
+      this.nodesMsg.data = res.data.nodesMsg.data
+    })
+    },
+    colonyInitNext() {
+      this.step = 2
+    },
+    nodeTypeNext() {
+      this.step = 3
+    },
+    nodeTypeBack(){
+      this.step = 1
+    },
+    componentNext() {
+      this.step = 4
+    },
+    componentBack() {
+      this.step = 2
+    },
+    downloadNext() {
+      this.step = 5
+    },
+    downloadBack() {
+      this.step = 3
+    }
+
+
   }
 }
 </script>
