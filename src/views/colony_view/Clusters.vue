@@ -11,7 +11,6 @@
     <v-btn
       color="primary"
       dark
-      v-bind="attrs"
       @click="onNewClusters"
     >
       新建一个集群

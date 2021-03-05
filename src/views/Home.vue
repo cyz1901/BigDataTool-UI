@@ -38,8 +38,8 @@
     </v-main>
     <v-bottom-navigation app height="30px" style="justify-content:left">
       <v-tooltip top>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon color="green" v-bind="attrs" v-on="on">{{
+        <template v-slot:activator="{ on }">
+          <v-icon color="green" v-on="on">{{
             footerItems
           }}</v-icon>
         </template>
@@ -73,7 +73,7 @@ export default {
       { title: 'About', icon: 'mdi-help-box', herf: '/about' }
       // { title: 'Tbout', icon: 'mdi-help-box', herf: '/clusters/colony' }
     ],
-    footerItems: 'mdi-help-box',
+    footerItems: 'iconfont icon-xintiao',
     right: null
   }),
   methods: {

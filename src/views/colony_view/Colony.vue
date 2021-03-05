@@ -50,7 +50,7 @@
             <v-select
               label="NameNode"
               :items="nodes"
-              v-model="configForm.nameNode"
+              v-model="nodeTypeForm.nameNode"
               chips
               persistent-hint
               style="width: 400px"
@@ -73,6 +73,7 @@
             :headers="componentMsg.header"
             :items="componentMsg.data"
             hide-default-footer
+            v-ripple='false'
           >
             <template v-slot:item.choose="{ item }">
               <v-simple-checkbox
@@ -81,7 +82,7 @@
             </template>
             <template v-slot:item.version="{ item }">
               <v-select
-                :items="nodes"
+                :items="item.version"
                 label="Standard"
               ></v-select>
             </template>
@@ -168,6 +169,7 @@ export default {
       e6: 1,
       name: 'helloworld',
       componentJs: {},
+      nodes: [],
       configForm: {
         name: '',
         nodeList: []
@@ -197,7 +199,8 @@ export default {
           {
             hostname: 'node1',
             ip: '196.168.1.1',
-            choose: false
+            choose: false,
+            version: []
           }
         ]
       },
