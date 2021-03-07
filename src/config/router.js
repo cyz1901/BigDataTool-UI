@@ -6,9 +6,10 @@ import ColonyIndex from '@/views/colony_view/index.vue'
 import webtest from '@/views/webtest'
 import Clusters from '@/views/colony_view/Clusters.vue'
 import Colony from '@/views/colony_view/Colony.vue'
-import ClustersHelp from "@/views/colony_view/ClustersHelp";
-import SettingView from "@/views/setting_view/index"
-import Setting from "@/views/setting_view/Setting";
+import ClustersHelp from '@/views/colony_view/ClustersHelp'
+import SettingView from '@/views/setting_view/index'
+import Setting from '@/views/setting_view/Setting'
+import ColonyMonitor from '@/views/colony_view/ColonyMonitor'
 
 Vue.use(Router)
 
@@ -44,6 +45,11 @@ const routes = [
             path: 'clustersHelp',
             name: 'clustersHelp',
             component: ClustersHelp
+          },
+          {
+            path: 'colonymonitor',
+            name: 'colonymonitor',
+            component: ColonyMonitor
           }
         ]
       },

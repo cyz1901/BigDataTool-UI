@@ -1,54 +1,49 @@
 <template>
   <v-stepper v-model="step" vertical>
-    <v-stepper-step :complete="step > 1" step="1">
-      集群初始化
-    </v-stepper-step>
+    <v-stepper-step :complete="step > 1" step="1"> 集群初始化 </v-stepper-step>
     <v-stepper-content step="1">
       <v-card color="grey darken-4" class="card">
         <v-card-text>
           <v-container fluid>
             <v-form ref="colonyInitForm">
-              <h3>
-                输入集群名称
-              </h3>
+              <h3>输入集群名称</h3>
               <v-text-field
                 label="集群名称"
                 v-model="colonyInitForm.name"
                 clearable
                 style="width: 250px"
               ></v-text-field>
-              <h3>
-                选择需要部署的节点
-              </h3>
+              <h3>选择需要部署的节点</h3>
               <v-data-table
                 :headers="nodesMsg.header"
                 :items="nodesMsg.data"
                 hide-default-footer
               >
                 <template v-slot:item.choose="{ item }">
-                  <v-simple-checkbox
-                    v-model="item.choose"
-                  ></v-simple-checkbox>
+                  <v-simple-checkbox v-model="item.choose"></v-simple-checkbox>
                 </template>
               </v-data-table>
             </v-form>
           </v-container>
         </v-card-text>
       </v-card>
-      <v-btn color="primary" @click="colonyInitNext" class="button"> 继续 </v-btn>
+      <v-btn color="primary" @click="colonyInitNext" class="button">
+        继续
+      </v-btn>
     </v-stepper-content>
 
-    <v-stepper-step :complete="step > 2" step="2"> 配置节点类型 </v-stepper-step>
+    <v-stepper-step :complete="step > 2" step="2">
+      配置节点类型
+    </v-stepper-step>
     <v-stepper-content step="2">
       <v-card color="grey darken-4" class="card">
-         <v-card-text>
+        <v-card-text>
           <form ref="nodeTypeForm">
-            <h3>
-              选择NameNode的节点
-            </h3>
+            <h3>选择NameNode的节点</h3>
             <v-select
               label="NameNode"
               :items="nodes"
+              item-text="hostname"
               v-model="nodeTypeForm.nameNode"
               chips
               persistent-hint
@@ -58,38 +53,37 @@
         </v-card-text>
       </v-card>
       <v-btn color="primary" @click="nodeTypeNext" class="button"> 继续 </v-btn>
-      <v-btn color="secondary" class="button" @click="nodeTypeBack"> 上一步 </v-btn>
+      <v-btn color="secondary" class="button" @click="nodeTypeBack">
+        上一步
+      </v-btn>
     </v-stepper-content>
 
     <v-stepper-step :complete="step > 3" step="3"> 选择组件 </v-stepper-step>
     <v-stepper-content step="3">
       <v-card color="grey darken-4" class="mb-12">
         <v-card-text>
-          <h3>
-            选择需要部署的组件
-          </h3>
+          <h3>选择需要部署的组件</h3>
           <v-data-table
             :headers="componentMsg.header"
             :items="componentMsg.data"
             hide-default-footer
-            v-ripple='false'
+            v-ripple="false"
           >
             <template v-slot:item.choose="{ item }">
-              <v-simple-checkbox
-                v-model="item.choose"
-              ></v-simple-checkbox>
+              <v-simple-checkbox v-model="item.choose"></v-simple-checkbox>
             </template>
             <template v-slot:item.version="{ item }">
-              <v-select
-                :items="item.version"
-                label="Standard"
-              ></v-select>
+              <v-select :items="item.version" label="Standard"></v-select>
             </template>
           </v-data-table>
         </v-card-text>
       </v-card>
-      <v-btn color="primary" @click="componentNext" class="button"> 继续 </v-btn>
-      <v-btn color="secondary" @click="componentBack" class="button"> 上一步 </v-btn>
+      <v-btn color="primary" @click="componentNext" class="button">
+        继续
+      </v-btn>
+      <v-btn color="secondary" @click="componentBack" class="button">
+        上一步
+      </v-btn>
     </v-stepper-content>
 
     <v-stepper-step :complete="step > 4" step="4">
@@ -98,30 +92,30 @@
     <v-stepper-content step="4">
       <v-card color="grey darken-4" class="mb-12">
         <v-card-text>
-          <v-expansion-panels accordion >
-            <v-expansion-panel
-            >
+          <v-expansion-panels accordion>
+            <v-expansion-panel>
               <v-expansion-panel-header style="height: 100px">
-                <download-progress name="总" download-progress="5"></download-progress>
+                <download-progress
+                  name="总"
+                  download-progress="5"
+                ></download-progress>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                  <v-list
-                  v-for="node in DownloadMsg.data"
-                  :key="node.name"
-                  >
-                    <v-container>
-                      <h6>{{node.name}}下载进度</h6>
-                      <v-progress-linear style="width: 90%">
-                      </v-progress-linear>
-                    </v-container>
-                  </v-list>
+                <v-list v-for="node in DownloadMsg.data" :key="node.name">
+                  <v-container>
+                    <h6>{{ node.name }}下载进度</h6>
+                    <v-progress-linear style="width: 90%"> </v-progress-linear>
+                  </v-container>
+                </v-list>
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
         </v-card-text>
       </v-card>
       <v-btn color="primary" @click="downloadNext" class="button"> 继续 </v-btn>
-      <v-btn color="secondary" class="button" @click="downloadBack"> 上一步 </v-btn>
+      <v-btn color="secondary" class="button" @click="downloadBack">
+        上一步
+      </v-btn>
     </v-stepper-content>
 
     <v-stepper-step step="5"> 构建集群 </v-stepper-step>
@@ -135,28 +129,26 @@
             style="margin-bottom: 30px; margin-top: 50px"
           ></v-progress-linear>
           <v-expansion-panels accordion>
-              <v-expansion-panel
-                v-for="(item,i) in 5"
-                :key="i"
-              >
-                <v-expansion-panel-header>
-                  Item
-                </v-expansion-panel-header>
-                <v-expansion-panel-content>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-expansion-panels>
+            <v-expansion-panel v-for="(item, i) in 5" :key="i">
+              <v-expansion-panel-header> Item </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat.
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
         </v-card-text>
       </v-card>
       <v-btn color="primary" @click="step = 5" class="button"> 继续 </v-btn>
-      <v-btn color="secondary"  class="button" @click="step = 4"> 上一步 </v-btn>
+      <v-btn color="secondary" class="button" @click="step = 4"> 上一步 </v-btn>
     </v-stepper-content>
   </v-stepper>
 </template>
 
 <script>
-import DownloadProgress from "@/components/DownloadProgress";
+import DownloadProgress from '@/components/DownloadProgress'
 export default {
 
   name: 'colony',
@@ -195,12 +187,6 @@ export default {
           }
         ],
         data: [
-          {
-            hostname: 'node1',
-            ip: '196.168.1.1',
-            choose: false,
-            version: []
-          }
         ]
       },
       componentMsg: {
@@ -220,18 +206,13 @@ export default {
             text: 'Des',
             value: 'des'
           },
-          { text: 'Version',
+          {
+            text: 'Version',
             value: 'version',
             width: 300
-          },
+          }
         ],
         data: [
-          {
-            name: 'hadoop',
-            des: 'xxxxx',
-            version: '',
-            choose: true
-          }
         ]
       },
       DownloadMsg: {
@@ -246,52 +227,61 @@ export default {
       }
     }
   },
-  mounted() {
+  mounted () {
     this.init()
   },
   methods: {
-    init() {
+    init () {
       this.$axios.get('/api/v1/colony').then(res => {
-      console.log(res.data)
-      this.nodesMsg.data = res.data.nodesMsg.data
-    })
+        console.log(res.data)
+        this.nodesMsg.data = res.data.data.nodesMsgList
+        this.componentMsg.data = res.data.data.componentMsgList
+      })
     },
-    colonyInitNext() {
+    colonyInitNext () {
       this.step = 2
+      // this.$axios.post('/api/v1/colony', this.nodesMsg.data).then(res => {
+
+      // })
+      this.nodes = this.nodesMsg.data.filter(function (value) {
+        if (value.choose === true) {
+          return value
+        }
+      })
+      console.log(this.nodes)
     },
-    nodeTypeNext() {
+    nodeTypeNext () {
       this.step = 3
     },
-    nodeTypeBack(){
+    nodeTypeBack () {
       this.step = 1
     },
-    componentNext() {
+    componentNext () {
       this.step = 4
     },
-    componentBack() {
+    componentBack () {
       this.step = 2
     },
-    downloadNext() {
+    downloadNext () {
       this.step = 5
     },
-    downloadBack() {
+    downloadBack () {
       this.step = 3
     }
-
 
   }
 }
 </script>
 
 <style scoped>
-.card{
+.card {
   margin-bottom: 20px;
 }
-.button{
+.button {
   width: 100px;
   margin-right: 30px;
 }
-h3{
+h3 {
   margin-bottom: 10px;
   margin-top: 10px;
 }
