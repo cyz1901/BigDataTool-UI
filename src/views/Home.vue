@@ -36,10 +36,10 @@
       ><!-- 为应用程序提供正确的插槽 -->
       <router-view></router-view>
     </v-main>
-    <v-bottom-navigation app height="30px" style="justify-content:left">
+    <v-bottom-navigation app height="35px" style="justify-content:left">
       <v-tooltip top>
         <template v-slot:activator="{ on }">
-          <v-icon color="green" v-on="on">{{
+          <v-icon color="green" v-on="on" style="padding-left: 30px">{{
             footerItems
           }}</v-icon>
         </template>

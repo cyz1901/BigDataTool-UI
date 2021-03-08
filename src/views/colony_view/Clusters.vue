@@ -55,13 +55,13 @@ export default {
   }),
   methods: {
     onNewClusters () {
-      this.$router.replace({ name: 'colony' })
+      this.$router.replace({ name: 'colonydeploy' })
     },
 
-    onDetailCluster (card) {
-      console.log(window.location.href)
-      this.$router.replace({ name: 'colonymonitor' })
-    },
+    // onDetailCluster (card) {
+    //   console.log(window.location.href)
+    //   this.$router.replace({ name: 'colonymonitor' })
+    // },
 
     init () {
       if (this.clusterSign === true) {

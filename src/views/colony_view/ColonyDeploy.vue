@@ -97,7 +97,8 @@
               <v-expansion-panel-header style="height: 100px">
                 <download-progress
                   name="总"
-                  download-progress="5"
+                  :download-progress="5"
+                  :componentProgerss="10"
                 ></download-progress>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
@@ -128,17 +129,30 @@
             stream
             style="margin-bottom: 30px; margin-top: 50px"
           ></v-progress-linear>
-          <v-expansion-panels accordion>
-            <v-expansion-panel v-for="(item, i) in 5" :key="i">
-              <v-expansion-panel-header> Item </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
+          <v-list
+      subheader
+      two-line
+    >
+      <v-subheader inset>Folders</v-subheader>
+
+      <v-list-item
+        v-for="folder in folders"
+        :key="folder.title"
+      >
+
+        <v-list-item-content>
+          <v-list-item-title v-text="folder.title"></v-list-item-title>
+
+          <v-list-item-subtitle v-text="folder.subtitle"></v-list-item-subtitle>
+        </v-list-item-content>
+
+        <v-list-item-action>
+          <v-btn icon>
+            <v-icon color="grey lighten-1">mdi-checkbox-marked-circle</v-icon>
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
+    </v-list>
         </v-card-text>
       </v-card>
       <v-btn color="primary" @click="step = 5" class="button"> 继续 </v-btn>
@@ -151,7 +165,7 @@
 import DownloadProgress from '@/components/DownloadProgress'
 export default {
 
-  name: 'colony',
+  name: 'colonydeploy',
   components: {
     DownloadProgress
   },
@@ -224,7 +238,36 @@ export default {
             name: 'node2'
           }
         ]
-      }
+      },
+        files: [
+        {
+          color: 'blue',
+          icon: 'mdi-clipboard-text',
+          subtitle: 'Jan 20, 2014',
+          title: 'Vacation itinerary',
+        },
+        {
+          color: 'amber',
+          icon: 'mdi-gesture-tap-button',
+          subtitle: 'Jan 10, 2014',
+          title: 'Kitchen remodel',
+        },
+      ],
+      folders: [
+        {
+          subtitle: 'Jan 9, 2014',
+          title: 'Photos',
+        },
+        {
+          subtitle: 'Jan 17, 2014',
+          title: 'Recipes',
+        },
+        {
+          subtitle: 'Jan 28, 2014',
+          title: 'Work',
+        },
+      ]
+      
     }
   },
   mounted () {
