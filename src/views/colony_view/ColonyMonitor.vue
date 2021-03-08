@@ -1,6 +1,6 @@
 <template>
   <v-card color="grey darken-4">
-    <v-container >
+    <v-container>
       <v-chart class="chart" :option="option" />
     </v-container>
   </v-card>
@@ -8,9 +8,9 @@
 
 <script>
 
-import { use } from "echarts/core";
-import { CanvasRenderer } from "echarts/renderers";
-import { PieChart,LineChart } from "echarts/charts";
+import { use } from 'echarts/core'
+import { CanvasRenderer } from 'echarts/renderers'
+import { PieChart, LineChart } from 'echarts/charts'
 import {
   TitleComponent,
   TooltipComponent,
@@ -18,8 +18,8 @@ import {
   GridSimpleComponent,
   GridComponent,
   MarkLineComponent
-} from "echarts/components";
-import VChart, { THEME_KEY } from "vue-echarts";
+} from 'echarts/components'
+import VChart from 'vue-echarts'
 
 use([
   CanvasRenderer,
@@ -31,14 +31,14 @@ use([
   GridSimpleComponent,
   GridComponent,
   MarkLineComponent
-]);
+])
 
 export default {
-  name: "ColonyMonitor",
+  name: 'ColonyMonitor',
   components: {
     VChart
   },
-  data() {
+  data () {
     return {
       option: {
         title: {
@@ -58,9 +58,9 @@ export default {
           smooth: true
         }]
       }
-    };
+    }
   }
-};
+}
 </script>
 
 <style scoped>

@@ -70,17 +70,17 @@ const routes = [
             component: Setting
           }
         ]
-      },
+      }
+    ]
+  },
+  {
+    path: '/loginView',
+    component: LoginView,
+    children: [
       {
-        path: '/loginView',
-        component: LoginView,
-        children: [
-          {
-            path: '',
-            name: 'login',
-            component: Login
-          }
-        ]
+        path: '',
+        name: 'login',
+        component: Login
       }
     ]
   }

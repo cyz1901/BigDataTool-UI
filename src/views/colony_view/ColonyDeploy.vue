@@ -129,30 +129,27 @@
             stream
             style="margin-bottom: 30px; margin-top: 50px"
           ></v-progress-linear>
-          <v-list
-      subheader
-      two-line
-    >
-      <v-subheader inset>Folders</v-subheader>
+          <v-list subheader two-line>
+            <v-subheader inset>Folders</v-subheader>
 
-      <v-list-item
-        v-for="folder in folders"
-        :key="folder.title"
-      >
+            <v-list-item v-for="folder in folders" :key="folder.title">
+              <v-list-item-content>
+                <v-list-item-title v-text="folder.title"></v-list-item-title>
 
-        <v-list-item-content>
-          <v-list-item-title v-text="folder.title"></v-list-item-title>
+                <v-list-item-subtitle
+                  v-text="folder.subtitle"
+                ></v-list-item-subtitle>
+              </v-list-item-content>
 
-          <v-list-item-subtitle v-text="folder.subtitle"></v-list-item-subtitle>
-        </v-list-item-content>
-
-        <v-list-item-action>
-          <v-btn icon>
-            <v-icon color="grey lighten-1">mdi-checkbox-marked-circle</v-icon>
-          </v-btn>
-        </v-list-item-action>
-      </v-list-item>
-    </v-list>
+              <v-list-item-action>
+                <v-btn icon>
+                  <v-icon color="grey lighten-1"
+                    >mdi-checkbox-marked-circle</v-icon
+                  >
+                </v-btn>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list>
         </v-card-text>
       </v-card>
       <v-btn color="primary" @click="step = 5" class="button"> 继续 </v-btn>
@@ -242,14 +239,14 @@ export default {
       folders: [
         {
           subtitle: '解压组件',
-          title: '解压',
+          title: '解压'
         },
         {
           subtitle: '初始化集群',
-          title: '初始化',
-        },
+          title: '初始化'
+        }
       ]
-      
+
     }
   },
   mounted () {
