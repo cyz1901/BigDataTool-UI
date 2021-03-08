@@ -1,11 +1,11 @@
 <template>
-  <p>hello p</p>
+  <router-view></router-view>
 </template>
 
 <script>
 export default {
-  name: 'test'
-}
+  name: "index",
+};
 </script>
 
 <style scoped>

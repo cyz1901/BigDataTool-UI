@@ -129,30 +129,27 @@
             stream
             style="margin-bottom: 30px; margin-top: 50px"
           ></v-progress-linear>
-          <v-list
-      subheader
-      two-line
-    >
-      <v-subheader inset>Folders</v-subheader>
+          <v-list subheader two-line>
+            <v-subheader inset>Folders</v-subheader>
 
-      <v-list-item
-        v-for="folder in folders"
-        :key="folder.title"
-      >
+            <v-list-item v-for="folder in folders" :key="folder.title">
+              <v-list-item-content>
+                <v-list-item-title v-text="folder.title"></v-list-item-title>
 
-        <v-list-item-content>
-          <v-list-item-title v-text="folder.title"></v-list-item-title>
+                <v-list-item-subtitle
+                  v-text="folder.subtitle"
+                ></v-list-item-subtitle>
+              </v-list-item-content>
 
-          <v-list-item-subtitle v-text="folder.subtitle"></v-list-item-subtitle>
-        </v-list-item-content>
-
-        <v-list-item-action>
-          <v-btn icon>
-            <v-icon color="grey lighten-1">mdi-checkbox-marked-circle</v-icon>
-          </v-btn>
-        </v-list-item-action>
-      </v-list-item>
-    </v-list>
+              <v-list-item-action>
+                <v-btn icon>
+                  <v-icon color="grey lighten-1"
+                    >mdi-checkbox-marked-circle</v-icon
+                  >
+                </v-btn>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list>
         </v-card-text>
       </v-card>
       <v-btn color="primary" @click="step = 5" class="button"> 继续 </v-btn>
@@ -230,44 +227,39 @@ export default {
         ]
       },
       DownloadMsg: {
-        data: [
-          {
-            name: 'node1'
+        data: {
+          allData: {
+            name: 'all',
+            totalComponents: '',
+            nowComponents: '',
+            totalDownloadSize:'',
+            nowlDownloadSize:''
+          },
+          nodeData:[
+                      {
+            name: 'node1',
+            totalDownloadSize:'',
+            nowlDownloadSize:''
           },
           {
-            name: 'node2'
+            name: 'node2',
+            totalDownloadSize:'',
+            nowlDownloadSize:''
           }
-        ]
+          ]
+        }
       },
-        files: [
-        {
-          color: 'blue',
-          icon: 'mdi-clipboard-text',
-          subtitle: 'Jan 20, 2014',
-          title: 'Vacation itinerary',
-        },
-        {
-          color: 'amber',
-          icon: 'mdi-gesture-tap-button',
-          subtitle: 'Jan 10, 2014',
-          title: 'Kitchen remodel',
-        },
-      ],
       folders: [
         {
-          subtitle: 'Jan 9, 2014',
-          title: 'Photos',
+          subtitle: '解压组件',
+          title: '解压'
         },
         {
-          subtitle: 'Jan 17, 2014',
-          title: 'Recipes',
-        },
-        {
-          subtitle: 'Jan 28, 2014',
-          title: 'Work',
-        },
+          subtitle: '初始化集群',
+          title: '初始化'
+        }
       ]
-      
+
     }
   },
   mounted () {
@@ -294,6 +286,7 @@ export default {
       console.log(this.nodes)
     },
     nodeTypeNext () {
+      // 发送namenode信息
       this.step = 3
     },
     nodeTypeBack () {
@@ -301,12 +294,17 @@ export default {
     },
     componentNext () {
       this.step = 4
+      // 执行下载操作
+
+      //完成后可以下一步
+
     },
     componentBack () {
       this.step = 2
     },
     downloadNext () {
       this.step = 5
+      // 执行各种命令 websocket 解压 改配置文件 初始化namenode 群起集群
     },
     downloadBack () {
       this.step = 3
