@@ -41,6 +41,10 @@ export default {
   data() {
     return {
       option: {
+        title: {
+          text: '内存监控',
+          x:'center'
+        },
         xAxis: {
           type: 'category',
           data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -61,6 +65,8 @@ export default {
 
 <style scoped>
 .chart {
-  height: 400px;
+  height: 250px;
+  width: 400px;
+  margin-left: 10px;
 }
 </style>

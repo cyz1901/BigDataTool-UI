@@ -1,11 +1,10 @@
 <template>
   <v-app>
-    <v-navigation-drawer app style="height: 100%">
-      <v-list-item>
-        <v-list-item-content style="height: 48px">
-          <v-list-item-title> Application </v-list-item-title>
-          <v-list-item-subtitle> subtext </v-list-item-subtitle>
-        </v-list-item-content>
+    <v-navigation-drawer app >
+      <v-list-item style="height:48px">
+            <v-list-item-avatar width="30px">
+              <v-img src="https://randomuser.me/api/portraits/women/85.jpg"></v-img>
+            </v-list-item-avatar>
       </v-list-item>
 
       <v-divider></v-divider>
@@ -90,7 +89,10 @@ export default {
 
       win.loadURL('https://github.com')
       win.show()
-    }
+    },
+  tologin(){
+          this.$router.replace({ name: 'colonydeploy' })
+  }
   }
 }
 </script>

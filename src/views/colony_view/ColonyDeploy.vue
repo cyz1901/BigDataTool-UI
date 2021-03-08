@@ -239,32 +239,14 @@ export default {
           }
         ]
       },
-        files: [
-        {
-          color: 'blue',
-          icon: 'mdi-clipboard-text',
-          subtitle: 'Jan 20, 2014',
-          title: 'Vacation itinerary',
-        },
-        {
-          color: 'amber',
-          icon: 'mdi-gesture-tap-button',
-          subtitle: 'Jan 10, 2014',
-          title: 'Kitchen remodel',
-        },
-      ],
       folders: [
         {
-          subtitle: 'Jan 9, 2014',
-          title: 'Photos',
+          subtitle: '解压组件',
+          title: '解压',
         },
         {
-          subtitle: 'Jan 17, 2014',
-          title: 'Recipes',
-        },
-        {
-          subtitle: 'Jan 28, 2014',
-          title: 'Work',
+          subtitle: '初始化集群',
+          title: '初始化',
         },
       ]
       
