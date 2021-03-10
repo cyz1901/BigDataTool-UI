@@ -72,7 +72,7 @@ export default {
       { title: 'About', icon: 'mdi-help-box', herf: '/about' }
       // { title: 'Tbout', icon: 'mdi-help-box', herf: '/clusters/colony' }
     ],
-    footerItems: 'check-circle-outline',
+    footerItems: 'mdi-check-circle-outline',
     right: null
   }),
   methods: {
