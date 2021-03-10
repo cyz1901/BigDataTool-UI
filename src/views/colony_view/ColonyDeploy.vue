@@ -92,13 +92,22 @@
     <v-stepper-content step="4">
       <v-card color="grey darken-4" class="mb-12">
         <v-card-text>
-          <v-expansion-panels accordion>
+          <v-container>
+            <v-row align="end" justify="end">
+          <v-btn @click="downloadComponent" >
+            下载
+          </v-btn>
+            </v-row>
+            <v-row>
+            <v-expansion-panels accordion  :readonly="readonly">
             <v-expansion-panel>
               <v-expansion-panel-header style="height: 100px">
                 <download-progress
                   name="总"
-                  :download-progress="5"
-                  :componentProgerss="10"
+                  :nowlDownloadSize="DownloadMsg.allData.nowlDownloadSize"
+                  :totalDownloadSize="DownloadMsg.allData.totalDownloadSize"
+                  :nowComponents="DownloadMsg.allData.nowComponents"
+                  :totalComponents="DownloadMsg.allData.totalDownloadSize"
                 ></download-progress>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
@@ -111,7 +120,10 @@
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
+          </v-row>
+          </v-container>
         </v-card-text>
+
       </v-card>
       <v-btn color="primary" @click="downloadNext" class="button"> 继续 </v-btn>
       <v-btn color="secondary" class="button" @click="downloadBack">
@@ -255,7 +267,7 @@ export default {
           subtitle: '初始化集群',
           title: '初始化'
         }
-      ]
+      ],
 
     }
   },
@@ -291,6 +303,28 @@ export default {
     },
     componentNext () {
       this.step = 4
+      // 完成后可以下一步
+    },
+    componentBack () {
+      this.step = 2
+    },
+    downloadNext () {
+      this.step = 5
+      // 执行各种命令 websocket 解压 改配置文件 初始化namenode 群起集群
+    },
+    downloadBack () {
+      this.step = 3
+    },
+
+
+    progressColor (status){
+      if (status === 'run' || status === "finish") {
+        return "blue"
+      }else if (status === "error") {
+        return 'red'
+      }
+    },
+    downloadComponent() {
       // 执行下载操作
       let ws = new WebSocket('ws://localhost:8000/websocket/download/1212')
       // 连接建立时触发
@@ -316,28 +350,7 @@ export default {
         // 关闭 websocket
         alert('连接已关闭...')
       }
-      // 完成后可以下一步
     },
-    componentBack () {
-      this.step = 2
-    },
-    downloadNext () {
-      this.step = 5
-      // 执行各种命令 websocket 解压 改配置文件 初始化namenode 群起集群
-    },
-    downloadBack () {
-      this.step = 3
-    },
-
-
-    progressColor (status){
-      if (status === 'run' || status === "finish") {
-        return "blue"
-      }else if (status === "error") {
-        return 'red'
-      }
-    }
-
   }
 }
 </script>

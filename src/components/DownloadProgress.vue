@@ -2,14 +2,14 @@
   <v-container>
     <v-row>
       <v-col>
-        <h6>{{name}}下载进度</h6>
-        <v-progress-linear :value="downloadProgress"
+        <h6>总下载进度 {{nowlDownloadSize}}/{{totalDownloadSize}}</h6>
+        <v-progress-linear :value="nowlDownloadSize/totalDownloadSize * 100"
                            style="width: 70%">
         </v-progress-linear>
       </v-col>
       <v-col>
-        <h6>组件数量</h6>
-        <v-progress-linear :value="componentProgerss"
+        <h6>组件数量 {{nowComponents}}/{{totalComponents}} </h6>
+        <v-progress-linear :value="nowComponents/totalComponents * 100"
                            style="width: 70%">
         </v-progress-linear>
       </v-col>
@@ -21,13 +21,16 @@
 export default {
   name: "DownloadProgress",
   props: {
-    name: {
-      type: String
-    },
-    downloadProgress: {
+    totalComponents: {
       type: Number
     },
-    componentProgerss: {
+    nowComponents: {
+      type: Number
+    },
+    totalDownloadSize: {
+      type: Number
+    },
+    nowlDownloadSize: {
       type: Number
     }
   }
