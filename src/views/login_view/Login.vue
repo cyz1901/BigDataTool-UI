@@ -9,24 +9,28 @@
           height="300"
         />
         <v-card style="width: 30%">
-          <v-container class="d-flex justify-center mb-6" style="padding-top:100px">
-          <v-form ref="loginForm">
-          <v-text-field
-            label="帐号"
-            hide-details="auto"
-            v-model="loginForm.name"
-          ></v-text-field>
-          <v-text-field
-            label="密码"
-            hide-details="auto"
-            v-model="loginForm.passworld"
-          ></v-text-field>
-          <v-btn
-          style="margin-top:20px;width: 100%"
-          @click="login"
-          :loading='loading'
-          >登陆</v-btn>
-          </v-form>
+          <v-container
+            class="d-flex justify-center mb-6"
+            style="padding-top: 100px"
+          >
+            <v-form ref="loginForm">
+              <v-text-field
+                label="帐号"
+                hide-details="auto"
+                v-model="loginForm.name"
+              ></v-text-field>
+              <v-text-field
+                label="密码"
+                hide-details="auto"
+                v-model="loginForm.passworld"
+              ></v-text-field>
+              <v-btn
+                style="margin-top: 20px; width: 100%"
+                @click="login"
+                :loading="loading"
+                >登陆</v-btn
+              >
+            </v-form>
           </v-container>
         </v-card>
       </v-container>
@@ -37,30 +41,29 @@
 <script>
 export default {
   name: 'Login',
-data () {
-  return{
+  data () {
+    return {
       buttonStatus: '',
-    loading: false,
-      loginForm:{
+      loading: false,
+      loginForm: {
         name: '',
         passworld: ''
       }
-  }
- },
+    }
+  },
 
-methods: {
-  login() {
-    this.loading = true
-    this.$axios.post('/api/v1/colony',this.loginForm).then(res => {
-      if (res.data.status === 'success') {
-        this.$router.push({ name: 'home' })
-      } else {
-        this.loading = false
-
-      }
-    })
+  methods: {
+    login () {
+      this.loading = true
+      this.$axios.post('/api/v1/colony', this.loginForm).then(res => {
+        if (res.data.status === 'success') {
+          this.$router.push({ name: 'home' })
+        } else {
+          this.loading = false
+        }
+      })
+    }
   }
-}
 }
 </script>
 

@@ -9,7 +9,7 @@ var _this
 export default {
   name: 'webtest',
   // 其他数据。。。
-  mounted() {
+  mounted () {
     _this = this
   },
   data: () => ({

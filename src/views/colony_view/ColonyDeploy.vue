@@ -94,36 +94,41 @@
         <v-card-text>
           <v-container>
             <v-row align="end" justify="end">
-          <v-btn @click="downloadComponent" >
-            下载
-          </v-btn>
+              <v-btn @click="downloadComponent"> 下载 </v-btn>
             </v-row>
             <v-row>
-            <v-expansion-panels accordion  :readonly="readonly">
-            <v-expansion-panel>
-              <v-expansion-panel-header style="height: 100px">
-                <download-progress
-                  name="总"
-                  :nowlDownloadSize="DownloadMsg.allData.nowlDownloadSize"
-                  :totalDownloadSize="DownloadMsg.allData.totalDownloadSize"
-                  :nowComponents="DownloadMsg.allData.nowComponents"
-                  :totalComponents="DownloadMsg.allData.totalDownloadSize"
-                ></download-progress>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <v-list v-for="node in DownloadMsg.nodeData" :key="node.name">
-                  <v-container>
-                    <h6>{{ node.name }}下载进度</h6>
-                    <v-progress-linear color="progressColor(node.status)" style="width: 90%"> </v-progress-linear>
-                  </v-container>
-                </v-list>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-          </v-row>
+              <v-expansion-panels accordion>
+                <v-expansion-panel>
+                  <v-expansion-panel-header style="height: 100px">
+                    <download-progress
+                      name="总"
+                      :nowlDownloadSize="DownloadMsg.allData.nowlDownloadSize"
+                      :totalDownloadSize="DownloadMsg.allData.totalDownloadSize"
+                      :nowComponents="DownloadMsg.allData.nowComponents"
+                      :totalComponents="DownloadMsg.allData.totalDownloadSize"
+                    ></download-progress>
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-list
+                      v-for="node in DownloadMsg.nodeData"
+                      :key="node.name"
+                    >
+                      <v-container>
+                        <h6>{{ node.name }}下载进度</h6>
+                        <v-progress-linear
+                          color="progressColor(node.status)"
+                          style="width: 90%"
+                          :value="node.nowlDownloadSize / node.totalDownloadSize * 100"
+                        >
+                        </v-progress-linear>
+                      </v-container>
+                    </v-list>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
+            </v-row>
           </v-container>
         </v-card-text>
-
       </v-card>
       <v-btn color="primary" @click="downloadNext" class="button"> 继续 </v-btn>
       <v-btn color="secondary" class="button" @click="downloadBack">
@@ -172,6 +177,7 @@
 
 <script>
 import DownloadProgress from '@/components/DownloadProgress'
+var _this
 export default {
 
   name: 'colonydeploy',
@@ -240,21 +246,21 @@ export default {
       },
       DownloadMsg: {
         allData: {
-          totalComponents: '',
-          nowComponents: '',
-          totalDownloadSize: '',
-          nowlDownloadSize: ''
+          totalComponents: 0,
+          nowComponents: 0,
+          totalDownloadSize: 0,
+          nowlDownloadSize: 0
         },
         nodeData: [
           {
             name: 'node1',
-            totalDownloadSize: '',
+            totalDownloadSize: 0,
             nowlDownloadSize: ''
           },
           {
             name: 'node2',
-            totalDownloadSize: '',
-            nowlDownloadSize: ''
+            totalDownloadSize: 0,
+            nowlDownloadSize: 0
           }
         ]
       },
@@ -267,11 +273,12 @@ export default {
           subtitle: '初始化集群',
           title: '初始化'
         }
-      ],
+      ]
 
     }
   },
   mounted () {
+    _this = this
     this.init()
   },
   methods: {
@@ -316,41 +323,44 @@ export default {
       this.step = 3
     },
 
-
-    progressColor (status){
-      if (status === 'run' || status === "finish") {
-        return "blue"
-      }else if (status === "error") {
+    progressColor (status) {
+      if (status === 'run' || status === 'finish') {
+        return 'blue'
+      } else if (status === 'error') {
         return 'red'
       }
     },
-    downloadComponent() {
+    downloadComponent () {
+      let resData
       // 执行下载操作
-      let ws = new WebSocket('ws://localhost:8000/websocket/download/1212')
+      let ws = new WebSocket('ws://localhost:8000/api/websocket/download')
       // 连接建立时触发
       ws.onopen = function () {
-        console.log('WebSocket已连接')
-
         // 使用连接发送数据
         ws.send('Hello!')
       }
       ws.onmessage = function (res) {
-        if (res.data.status === 'run') {
-          _this.DownloadMsg.nodeData = res.data.nodeData
-        }else if (res.data.status === 'error') {
-          
-        }else if (res.data.status === 'finish') {
-          
-        }
-        console.log(evt.data)
+        resData = JSON.parse(res.data)
+        // console.log(resData)
+        // if (resData.status === 'run') {
+        //   _this.DownloadMsg.nodeData = res.data.nodeData
+        // } else if (resData.status === 'error') {
+        //
+        // } else if (resData.status === 'finish') {
+        //
+        // }
+        _this.DownloadMsg.nodeData = resData.listDataList
+        _this.DownloadMsg.allData = resData.allData
+        console.log(_this.DownloadMsg.nodeData)
         alert('数据已接收...')
       }
+
 
       ws.onclose = function () {
         // 关闭 websocket
         alert('连接已关闭...')
       }
-    },
+    }
   }
 }
 </script>
