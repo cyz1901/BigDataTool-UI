@@ -102,10 +102,10 @@
                 ></download-progress>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <v-list v-for="node in DownloadMsg.data" :key="node.name">
+                <v-list v-for="node in DownloadMsg.nodeData" :key="node.name">
                   <v-container>
                     <h6>{{ node.name }}下载进度</h6>
-                    <v-progress-linear style="width: 90%"> </v-progress-linear>
+                    <v-progress-linear color="progressColor(node.status)" style="width: 90%"> </v-progress-linear>
                   </v-container>
                 </v-list>
               </v-expansion-panel-content>
@@ -227,27 +227,24 @@ export default {
         ]
       },
       DownloadMsg: {
-        data: {
-          allData: {
-            name: 'all',
-            totalComponents: '',
-            nowComponents: '',
-            totalDownloadSize:'',
-            nowlDownloadSize:''
-          },
-          nodeData:[
-                      {
+        allData: {
+          totalComponents: '',
+          nowComponents: '',
+          totalDownloadSize: '',
+          nowlDownloadSize: ''
+        },
+        nodeData: [
+          {
             name: 'node1',
-            totalDownloadSize:'',
-            nowlDownloadSize:''
+            totalDownloadSize: '',
+            nowlDownloadSize: ''
           },
           {
             name: 'node2',
-            totalDownloadSize:'',
-            nowlDownloadSize:''
+            totalDownloadSize: '',
+            nowlDownloadSize: ''
           }
-          ]
-        }
+        ]
       },
       folders: [
         {
@@ -295,9 +292,31 @@ export default {
     componentNext () {
       this.step = 4
       // 执行下载操作
+      let ws = new WebSocket('ws://localhost:8000/websocket/download/1212')
+      // 连接建立时触发
+      ws.onopen = function () {
+        console.log('WebSocket已连接')
 
-      //完成后可以下一步
+        // 使用连接发送数据
+        ws.send('Hello!')
+      }
+      ws.onmessage = function (res) {
+        if (res.data.status === 'run') {
+          _this.DownloadMsg.nodeData = res.data.nodeData
+        }else if (res.data.status === 'error') {
+          
+        }else if (res.data.status === 'finish') {
+          
+        }
+        console.log(evt.data)
+        alert('数据已接收...')
+      }
 
+      ws.onclose = function () {
+        // 关闭 websocket
+        alert('连接已关闭...')
+      }
+      // 完成后可以下一步
     },
     componentBack () {
       this.step = 2
@@ -308,6 +327,15 @@ export default {
     },
     downloadBack () {
       this.step = 3
+    },
+
+
+    progressColor (status){
+      if (status === 'run' || status === "finish") {
+        return "blue"
+      }else if (status === "error") {
+        return 'red'
+      }
     }
 
   }
