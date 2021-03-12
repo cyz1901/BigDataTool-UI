@@ -12,6 +12,8 @@ import Setting from '@/views/setting_view/Setting'
 import LoginView from '@/views/login_view/index'
 import Login from '@/views/login_view/Login'
 import ColonyMonitor from '@/views/colony_view/ColonyMonitor'
+import ColonyOperation from '@/views/colony_view/ColonyOperation'
+
 
 Vue.use(Router)
 
@@ -52,6 +54,12 @@ const routes = [
             path: 'colonymonitor',
             name: 'colonymonitor',
             component: ColonyMonitor
+          },
+          // ColonyOperation
+          {
+            path: 'ColonyOperation',
+            name: 'ColonyOperation',
+            component: ColonyOperation
           }
         ]
       },

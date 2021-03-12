@@ -76,6 +76,10 @@
               <v-select :items="item.version" label="Standard"></v-select>
             </template>
           </v-data-table>
+          <h3>选择部署方式</h3>
+          <v-select>
+
+          </v-select>
         </v-card-text>
       </v-card>
       <v-btn color="primary" @click="componentNext" class="button">
@@ -94,7 +98,7 @@
         <v-card-text>
           <v-container>
             <v-row align="end" justify="end">
-              <v-btn @click="downloadComponent"> 下载 </v-btn>
+              <v-btn @click="downloadComponent" color="primary" width="150px"> 下载 </v-btn>
             </v-row>
             <v-row>
               <v-expansion-panels accordion>
@@ -272,6 +276,13 @@ export default {
         {
           subtitle: '初始化集群',
           title: '初始化'
+        }
+      ],
+      deployMsg: [
+        {
+          name: '',
+          msg: '',
+          status: ''
         }
       ]
 

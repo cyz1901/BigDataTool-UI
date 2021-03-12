@@ -1,9 +1,24 @@
 <template>
-  <v-card color="grey darken-4">
     <v-container>
-      <v-chart class="chart" :option="option" />
+      <v-col>
+      <v-row>
+        <v-card color="grey darken-4">
+          <v-chart class="chart" :option="option" />
+        </v-card>
+        <v-card color="grey darken-4">
+          <v-chart class="chart" :option="option" />
+        </v-card>
+      </v-row>
+      <v-row>
+        <v-card color="grey darken-4">
+          <v-chart class="chart" :option="option" />
+        </v-card>
+        <v-card color="grey darken-4">
+          <v-chart class="chart" :option="option" />
+        </v-card>
+      </v-row>
+      </v-col>
     </v-container>
-  </v-card>
 </template>
 
 <script>
@@ -52,11 +67,20 @@ export default {
         yAxis: {
           type: 'value'
         },
-        series: [{
-          data: [820, 932, 901, 934, 1290, 1330, 1320],
-          type: 'line',
-          smooth: true
-        }]
+        series: [
+          {
+            name:'富国',
+            type:'line',
+            stack: '总量',
+            data:[120, 132, 101, 134],
+        },
+        {
+            name:'易方达',
+            type:'line',
+            stack: '总量',
+            data:[220, 182, 191, 234],
+        },
+        ]
       }
     }
   }
