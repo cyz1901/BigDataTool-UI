@@ -35,9 +35,7 @@ export default {
   methods: {
     init () {
       this.$axios.get('/api/v1/setting').then(res => {
-        console.log(res.data)
         this.settingForm.data.push(res.data.data)
-        console.log(this.settingForm.data)
       })
     }
   }

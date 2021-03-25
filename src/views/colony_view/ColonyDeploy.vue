@@ -47,7 +47,7 @@
               v-model="nodeTypeForm.nameNode"
               chips
               persistent-hint
-              style="width: 400px"
+              style="width: 30%"
             ></v-select>
           </form>
         </v-card-text>
@@ -73,13 +73,15 @@
               <v-simple-checkbox v-model="item.choose"></v-simple-checkbox>
             </template>
             <template v-slot:item.version="{ item }">
-              <v-select :items="item.version" label="Standard"></v-select>
+              <v-select
+                :items="item.version"
+                v-model="item.chooseVersion"
+                label="Standard"
+              ></v-select>
             </template>
           </v-data-table>
           <h3>选择部署方式</h3>
-          <v-select>
-
-          </v-select>
+          <v-select style="width: 30%"> </v-select>
         </v-card-text>
       </v-card>
       <v-btn color="primary" @click="componentNext" class="button">
@@ -98,7 +100,13 @@
         <v-card-text>
           <v-container>
             <v-row align="end" justify="end">
-              <v-btn @click="downloadComponent" color="primary" width="150px"> 下载 </v-btn>
+              <v-btn
+                @click="downloadComponent"
+                width="150px"
+                style="margin-bottom: 20px"
+              >
+                下载
+              </v-btn>
             </v-row>
             <v-row>
               <v-expansion-panels accordion>
@@ -122,7 +130,10 @@
                         <v-progress-linear
                           color="progressColor(node.status)"
                           style="width: 90%"
-                          :value="node.nowlDownloadSize / node.totalDownloadSize * 100"
+                          :value="
+                            (node.nowlDownloadSize / node.totalDownloadSize) *
+                            100
+                          "
                         >
                         </v-progress-linear>
                       </v-container>
@@ -173,7 +184,7 @@
           </v-list>
         </v-card-text>
       </v-card>
-      <v-btn color="primary" @click="step = 5" class="button"> 继续 </v-btn>
+      <v-btn color="primary" @click="deploy" class="button"> 部署 </v-btn>
       <v-btn color="secondary" class="button" @click="step = 4"> 上一步 </v-btn>
     </v-stepper-content>
   </v-stepper>
@@ -248,6 +259,7 @@ export default {
         data: [
         ]
       },
+      componentDownloadRequest: [],
       DownloadMsg: {
         allData: {
           totalComponents: 0,
@@ -266,7 +278,8 @@ export default {
             totalDownloadSize: 0,
             nowlDownloadSize: 0
           }
-        ]
+        ],
+        status: ''
       },
       folders: [
         {
@@ -295,22 +308,17 @@ export default {
   methods: {
     init () {
       this.$axios.get('/api/v1/colony').then(res => {
-        console.log(res.data)
         this.nodesMsg.data = res.data.data.nodesMsgList
         this.componentMsg.data = res.data.data.componentMsgList
       })
     },
     colonyInitNext () {
       this.step = 2
-      // this.$axios.post('/api/v1/colony', this.nodesMsg.data).then(res => {
-
-      // })
       this.nodes = this.nodesMsg.data.filter(function (value) {
         if (value.choose === true) {
           return value
         }
       })
-      console.log(this.nodes)
     },
     nodeTypeNext () {
       // 发送namenode信息
@@ -322,6 +330,19 @@ export default {
     componentNext () {
       this.step = 4
       // 完成后可以下一步
+      // this.componentDownloadMsg = this.componentMsg.data.filter(function (value) {
+      //   if (value.choose === true) {
+      //     return value
+      //   }
+      // })
+      this.componentDownloadRequest = this.componentMsg.data.map(function (value) {
+        if (value.choose === true) {
+          return {
+            name: value.name,
+            version: value.chooseVersion
+          }
+        }
+      })
     },
     componentBack () {
       this.step = 2
@@ -348,28 +369,43 @@ export default {
       // 连接建立时触发
       ws.onopen = function () {
         // 使用连接发送数据
-        ws.send('Hello!')
+        ws.send(JSON.stringify(_this.componentDownloadRequest))
       }
       ws.onmessage = function (res) {
         resData = JSON.parse(res.data)
-        // console.log(resData)
-        // if (resData.status === 'run') {
-        //   _this.DownloadMsg.nodeData = res.data.nodeData
-        // } else if (resData.status === 'error') {
-        //
-        // } else if (resData.status === 'finish') {
-        //
-        // }
-        _this.DownloadMsg.nodeData = resData.listDataList
-        _this.DownloadMsg.allData = resData.allData
-        console.log(_this.DownloadMsg.nodeData)
-        alert('数据已接收...')
+        console.log(resData)
+        if (resData.status === 'run') {
+          _this.DownloadMsg.nodeData = resData.listDataList
+          _this.DownloadMsg.allData = resData.allData
+          console.log(_this.DownloadMsg.nodeData)
+        } else if (resData.status === 'error') {
+
+        } else if (resData.status === 'finish') {
+          ws.close()
+          alert('连接已关闭...')
+        }
       }
+    },
+    deploy () {
+      let resData
+      // 执行部署操作
+      let ws = new WebSocket('ws://localhost:8000/api/websocket/deploy')
+      // 连接建立时触发
+      ws.onopen = function () {
+        // 使用连接发送数据
+        ws.send(JSON.stringify('start'))
+      }
+      ws.onmessage = function (res) {
+        resData = JSON.parse(res.data)
+        console.log(resData)
+        if (resData.status === 'run') {
 
+        } else if (resData.status === 'error') {
 
-      ws.onclose = function () {
-        // 关闭 websocket
-        alert('连接已关闭...')
+        } else if (resData.status === 'finish') {
+          ws.close()
+          alert('连接已关闭...')
+        }
       }
     }
   }
@@ -386,6 +422,6 @@ export default {
 }
 h3 {
   margin-bottom: 10px;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 </style>
