@@ -51,14 +51,14 @@ const routes = [
             component: ClustersHelp
           },
           {
-            path: 'colonymonitor',
-            name: 'colonymonitor',
+            path: 'colonyMonitor',
+            name: 'colonyMonitor',
             component: ColonyMonitor
           },
           // ColonyOperation
           {
-            path: 'ColonyOperation',
-            name: 'ColonyOperation',
+            path: 'colonyOperation',
+            name: 'colonyOperation',
             component: ColonyOperation
           }
         ]

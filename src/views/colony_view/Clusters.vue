@@ -29,7 +29,7 @@
         </v-list-item>
 
         <v-card-actions>
-          <v-btn outlined rounded text @click="onDetailCluster(card)">
+          <v-btn outlined rounded text @click="onColonyOperation(card)">
             集群操作
           </v-btn>
           <v-btn outlined rounded text @click="onDetailCluster(card)">
@@ -63,10 +63,11 @@ export default {
 
     onDetailCluster (card) {
       console.log(window.location.href)
-      this.$router.replace({ name: 'colonymonitor' })
+      this.$router.replace({ name: 'colonyMonitor' })
     },
-    onColonyOperation() {
-
+    onColonyOperation(card) {
+      console.log(window.location.href)
+      this.$router.replace({ name: 'colonyOperation' })
     },
     init () {
       if (this.clusterSign === true) {

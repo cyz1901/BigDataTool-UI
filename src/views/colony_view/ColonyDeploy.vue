@@ -162,9 +162,9 @@
             style="margin-bottom: 30px; margin-top: 50px"
           ></v-progress-linear>
           <v-list subheader two-line>
-            <v-subheader inset>Folders</v-subheader>
+            <v-subheader inset></v-subheader>
 
-            <v-list-item v-for="folder in folders" :key="folder.title">
+            <v-list-item v-for="folder in deployMsg" :key="folder.title">
               <v-list-item-content>
                 <v-list-item-title v-text="folder.title"></v-list-item-title>
 
@@ -175,8 +175,8 @@
 
               <v-list-item-action>
                 <v-btn icon>
-                  <v-icon color="grey lighten-1"
-                    >mdi-checkbox-marked-circle</v-icon
+                  <v-icon :color=deployIconColour(folder.status)
+                    >{{deployIconStatus(folder.status)}}</v-icon
                   >
                 </v-btn>
               </v-list-item-action>
@@ -281,24 +281,22 @@ export default {
         ],
         status: ''
       },
-      folders: [
+      deployMsg: [
         {
           subtitle: '解压组件',
-          title: '解压'
+          title: '解压',
+          status: "defeat"
+        },
+        {
+          subtitle: '更改配置文件',
+          title: '配置',
+          status: "error"
         },
         {
           subtitle: '初始化集群',
           title: '初始化'
         }
       ],
-      deployMsg: [
-        {
-          name: '',
-          msg: '',
-          status: ''
-        }
-      ]
-
     }
   },
   mounted () {
@@ -399,13 +397,31 @@ export default {
         resData = JSON.parse(res.data)
         console.log(resData)
         if (resData.status === 'run') {
-
+          _this.deployMsg = res.data
         } else if (resData.status === 'error') {
 
         } else if (resData.status === 'finish') {
           ws.close()
           alert('连接已关闭...')
         }
+      }
+    },
+    deployIconColour(status){
+      if(status === "defeat"){
+        return "grey lighten-1"
+      }else if(status === "success"){
+        return "blue"
+      }else if(status === "error"){
+        return "red"
+      }
+
+
+    },
+    deployIconStatus(status){
+      if(status === "error"){
+        return "mdi-alert-circle"
+      }else {
+        return "mdi-checkbox-marked-circle"
       }
     }
   }
