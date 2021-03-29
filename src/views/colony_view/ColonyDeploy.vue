@@ -5,11 +5,11 @@
       <v-card color="grey darken-4" class="card">
         <v-card-text>
           <v-container fluid>
-            <v-form ref="colonyInitForm">
+            <v-form ref="deployRequest">
               <h3>输入集群名称</h3>
               <v-text-field
                 label="集群名称"
-                v-model="colonyInitForm.name"
+                v-model="deployRequest.colonyName"
                 clearable
                 style="width: 250px"
               ></v-text-field>
@@ -44,7 +44,7 @@
               label="NameNode"
               :items="nodes"
               item-text="hostname"
-              v-model="nodeTypeForm.nameNode"
+              v-model="nodesMsg.nameNode"
               chips
               persistent-hint
               style="width: 30%"
@@ -81,6 +81,8 @@
             </template>
           </v-data-table>
           <h3>选择部署方式</h3>
+          <v-select style="width: 30%"> </v-select>
+          <h3>选择部署类型</h3>
           <v-select style="width: 30%"> </v-select>
         </v-card-text>
       </v-card>
@@ -175,9 +177,9 @@
 
               <v-list-item-action>
                 <v-btn icon>
-                  <v-icon :color=deployIconColour(folder.status)
-                    >{{deployIconStatus(folder.status)}}</v-icon
-                  >
+                  <v-icon :color="deployIconColour(folder.status)">{{
+                    deployIconStatus(folder.status)
+                  }}</v-icon>
                 </v-btn>
               </v-list-item-action>
             </v-list-item>
@@ -285,18 +287,24 @@ export default {
         {
           subtitle: '解压组件',
           title: '解压',
-          status: "defeat"
+          status: 'defeat'
         },
         {
           subtitle: '更改配置文件',
           title: '配置',
-          status: "error"
+          status: 'error'
         },
         {
           subtitle: '初始化集群',
           title: '初始化'
         }
       ],
+      deployRequest: {
+        colonyName: '',
+        deployType: '',
+        nodeData: [],
+        componentData: []
+      }
     }
   },
   mounted () {
@@ -386,12 +394,28 @@ export default {
     },
     deploy () {
       let resData
+      // 构造部署数据
+      this.deployRequest.nodeData = this.nodesMsg.data
+      this.deployRequest.nodeData.map((value, index) => {
+        if (value.hostName === this.nodesMsg.nameNode) {
+          value.nodeType = 'nameNode'
+        } else {
+          value.nodeType = 'dataNode'
+        }
+        delete value.choose
+      })
+      this.deployRequest.componentData = this.componentDownloadRequest
+      // this.deployRequest.componentData.map((value, index) => {
+      //   delete value.des
+      //   delete value.choose
+      // })
       // 执行部署操作
       let ws = new WebSocket('ws://localhost:8000/api/websocket/deploy')
       // 连接建立时触发
       ws.onopen = function () {
         // 使用连接发送数据
-        ws.send(JSON.stringify('start'))
+        ws.send(JSON.stringify(_this.deployRequest))
+        console.log(_this.deployRequest)
       }
       ws.onmessage = function (res) {
         resData = JSON.parse(res.data)
@@ -406,22 +430,23 @@ export default {
         }
       }
     },
-    deployIconColour(status){
-      if(status === "defeat"){
-        return "grey lighten-1"
-      }else if(status === "success"){
-        return "blue"
-      }else if(status === "error"){
-        return "red"
-      }
-
-
+    deployNamenode () {
+      console.log('type')
     },
-    deployIconStatus(status){
-      if(status === "error"){
-        return "mdi-alert-circle"
-      }else {
-        return "mdi-checkbox-marked-circle"
+    deployIconColour (status) {
+      if (status === 'defeat') {
+        return 'grey lighten-1'
+      } else if (status === 'success') {
+        return 'blue'
+      } else if (status === 'error') {
+        return 'red'
+      }
+    },
+    deployIconStatus (status) {
+      if (status === 'error') {
+        return 'mdi-alert-circle'
+      } else {
+        return 'mdi-checkbox-marked-circle'
       }
     }
   }
