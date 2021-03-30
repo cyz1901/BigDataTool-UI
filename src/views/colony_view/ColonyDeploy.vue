@@ -81,9 +81,11 @@
             </template>
           </v-data-table>
           <h3>选择部署方式</h3>
-          <v-select style="width: 30%"> </v-select>
+          <v-select style="width: 30%" :items="deploySelect.deployWay">
+          </v-select>
           <h3>选择部署类型</h3>
-          <v-select style="width: 30%"> </v-select>
+          <v-select style="width: 30%" :items="deploySelect.deployType">
+          </v-select>
         </v-card-text>
       </v-card>
       <v-btn color="primary" @click="componentNext" class="button">
@@ -160,6 +162,7 @@
           <v-progress-linear
             color="primary"
             buffer-value="0"
+            :value="deployProgress"
             stream
             style="margin-bottom: 30px; margin-top: 50px"
           ></v-progress-linear>
@@ -207,6 +210,7 @@ export default {
       name: 'helloworld',
       componentJs: {},
       nodes: [],
+      deployProgress: 0,
       colonyInitForm: {
         name: '',
         nodeList: []
@@ -233,7 +237,8 @@ export default {
           }
         ],
         data: [
-        ]
+        ],
+        nameNode: ''
       },
       componentMsg: {
         header: [
@@ -283,20 +288,31 @@ export default {
         ],
         status: ''
       },
+      deploySelect: {
+        deployWay: [
+          '下载',
+          '分发'
+        ],
+        deployType: [
+          '单机',
+          '分布式'
+        ]
+      },
       deployMsg: [
         {
-          subtitle: '解压组件',
           title: '解压',
+          subtitle: '解压组件',
           status: 'defeat'
         },
         {
-          subtitle: '更改配置文件',
           title: '配置',
-          status: 'error'
+          subtitle: '更改配置文件',
+          status: 'defeat'
         },
         {
+          title: '初始化',
           subtitle: '初始化集群',
-          title: '初始化'
+          status: 'defeat'
         }
       ],
       deployRequest: {
@@ -396,14 +412,16 @@ export default {
       let resData
       // 构造部署数据
       this.deployRequest.nodeData = this.nodesMsg.data
+      console.log(this.nodesMsg.nameNode)
       this.deployRequest.nodeData.map((value, index) => {
-        if (value.hostName === this.nodesMsg.nameNode) {
+        if (value.hostname === this.nodesMsg.nameNode) {
           value.nodeType = 'nameNode'
         } else {
           value.nodeType = 'dataNode'
         }
         delete value.choose
       })
+      console.log(this.deployRequest.nodeData)
       this.deployRequest.componentData = this.componentDownloadRequest
       // this.deployRequest.componentData.map((value, index) => {
       //   delete value.des
@@ -420,13 +438,23 @@ export default {
       ws.onmessage = function (res) {
         resData = JSON.parse(res.data)
         console.log(resData)
-        if (resData.status === 'run') {
-          _this.deployMsg = res.data
-        } else if (resData.status === 'error') {
-
-        } else if (resData.status === 'finish') {
+        if (resData.title === 'extract') {
+          _this.deployMsg[0].status = resData.status
+          _this.deployMsg[0].subtitle = resData.subtitle
+          _this.deployProgress = 30
+        } else if (resData.title === 'configure') {
+          _this.deployMsg[1].status = resData.status
+          _this.deployMsg[1].subtitle = resData.subtitle
+          _this.deployProgress = 60
+        } else if (resData.title === 'init') {
+          _this.deployMsg[2].status = resData.status
+          _this.deployMsg[2].subtitle = resData.subtitle
+          _this.deployProgress = 90
+        } else if (resData.title === 'close') {
+          _this.deployProgress = 100
+          console.log('close')
           ws.close()
-          alert('连接已关闭...')
+          alert('deploy连接已关闭...')
         }
       }
     },
