@@ -37,7 +37,7 @@ export default {
   }),
   methods: {
     on () {
-      let ws = new WebSocket('ws://127.0.0.1:8000/api/websocket/download')
+      let ws = new WebSocket('ws://127.0.0.1:8000/api/test')
       // 连接建立时触发
       ws.onopen = function () {
         console.log('WebSocket已连接')

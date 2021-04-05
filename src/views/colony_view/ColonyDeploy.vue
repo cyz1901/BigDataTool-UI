@@ -189,7 +189,15 @@
           </v-list>
         </v-card-text>
       </v-card>
-      <v-btn color="primary" @click="deploy" class="button"> 部署 </v-btn>
+      <v-btn
+        color="primary"
+        @click="deploy"
+        class="button"
+        :disabled="deployButtonDisabled"
+        :loading="deployButtonLoading"
+      >
+        {{ deployButtonData }}
+      </v-btn>
       <v-btn color="secondary" class="button" @click="step = 4"> 上一步 </v-btn>
     </v-stepper-content>
   </v-stepper>
@@ -320,7 +328,10 @@ export default {
         deployType: '',
         nodeData: [],
         componentData: []
-      }
+      },
+      deployButtonData: '部署',
+      deployButtonDisabled: false,
+      deployButtonLoading: false
     }
   },
   mounted () {
@@ -409,53 +420,63 @@ export default {
       }
     },
     deploy () {
-      let resData
-      // 构造部署数据
-      this.deployRequest.nodeData = this.nodesMsg.data
-      console.log(this.nodesMsg.nameNode)
-      this.deployRequest.nodeData.map((value, index) => {
-        if (value.hostname === this.nodesMsg.nameNode) {
-          value.nodeType = 'nameNode'
-        } else {
-          value.nodeType = 'dataNode'
+      if (this.deployButtonData === '部署') {
+        // 按钮效果
+        this.deployButtonDisabled = true
+        this.deployButtonLoading = true
+        // 构造部署数据
+        let resData
+        this.deployRequest.nodeData = this.nodesMsg.data
+        console.log(this.nodesMsg.nameNode)
+        this.deployRequest.nodeData.map((value, index) => {
+          if (value.hostname === this.nodesMsg.nameNode) {
+            value.nodeType = 'nameNode'
+          } else {
+            value.nodeType = 'dataNode'
+          }
+          delete value.choose
+        })
+        console.log(this.deployRequest.nodeData)
+        this.deployRequest.componentData = this.componentDownloadRequest
+        // this.deployRequest.componentData.map((value, index) => {
+        //   delete value.des
+        //   delete value.choose
+        // })
+        // 执行部署操作
+        let ws = new WebSocket('ws://localhost:8000/api/websocket/deploy')
+        // 连接建立时触发
+        ws.onopen = function () {
+          // 使用连接发送数据
+          ws.send(JSON.stringify(_this.deployRequest))
+          console.log(_this.deployRequest)
         }
-        delete value.choose
-      })
-      console.log(this.deployRequest.nodeData)
-      this.deployRequest.componentData = this.componentDownloadRequest
-      // this.deployRequest.componentData.map((value, index) => {
-      //   delete value.des
-      //   delete value.choose
-      // })
-      // 执行部署操作
-      let ws = new WebSocket('ws://localhost:8000/api/websocket/deploy')
-      // 连接建立时触发
-      ws.onopen = function () {
-        // 使用连接发送数据
-        ws.send(JSON.stringify(_this.deployRequest))
-        console.log(_this.deployRequest)
-      }
-      ws.onmessage = function (res) {
-        resData = JSON.parse(res.data)
-        console.log(resData)
-        if (resData.title === 'extract') {
-          _this.deployMsg[0].status = resData.status
-          _this.deployMsg[0].subtitle = resData.subtitle
-          _this.deployProgress = 30
-        } else if (resData.title === 'configure') {
-          _this.deployMsg[1].status = resData.status
-          _this.deployMsg[1].subtitle = resData.subtitle
-          _this.deployProgress = 60
-        } else if (resData.title === 'init') {
-          _this.deployMsg[2].status = resData.status
-          _this.deployMsg[2].subtitle = resData.subtitle
-          _this.deployProgress = 90
-        } else if (resData.title === 'close') {
-          _this.deployProgress = 100
-          console.log('close')
-          ws.close()
-          alert('deploy连接已关闭...')
+        ws.onmessage = function (res) {
+          resData = JSON.parse(res.data)
+          console.log(resData)
+          if (resData.title === 'extract') {
+            _this.deployMsg[0].status = resData.status
+            _this.deployMsg[0].subtitle = resData.subtitle
+            _this.deployProgress = 30
+          } else if (resData.title === 'configure') {
+            _this.deployMsg[1].status = resData.status
+            _this.deployMsg[1].subtitle = resData.subtitle
+            _this.deployProgress = 60
+          } else if (resData.title === 'init') {
+            _this.deployMsg[2].status = resData.status
+            _this.deployMsg[2].subtitle = resData.subtitle
+            _this.deployProgress = 90
+          } else if (resData.title === 'close') {
+            _this.deployProgress = 100
+            _this.deployButtonDisabled = false
+            _this.deployButtonLoading = false
+            _this.deployButtonData = '完成'
+            console.log('close')
+            ws.close()
+            alert('deploy连接已关闭...')
+          }
         }
+      } else {
+        console.log('完成')
       }
     },
     deployNamenode () {
