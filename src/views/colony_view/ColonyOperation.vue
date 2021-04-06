@@ -15,22 +15,20 @@
         </v-row>
       </v-container>
     </v-app-bar>
-    <div style="display: flex; margin: 10px">
-      <v-card style="width: 30%; height: 100%; margin-right: 10px">
-        <v-container style="margin-top: 20px">
+    <div style="display: flex; margin: 20px">
+      <v-card style="width: 30%; height: 100%; margin-right: 10px;margin-top: 12px">
+        <v-container style="margin-top: 30px">
           <v-row>
             <v-col cols="2" offset-md="1">
-              <v-icon x-large >
-                iconfont icon-hadoop
-              </v-icon>
+              <v-icon x-large> iconfont icon-hadoop </v-icon>
             </v-col>
             <v-col align-self="center">
-              <h4>{{nameNodeName}}</h4>
+              <h4>{{ nameNodeName }}</h4>
             </v-col>
-            <v-col  align-self="center">
-              <v-icon color="primary" style="padding-left: 30px">{{
-                  colonyIcon
-                }}</v-icon>
+            <v-col align-self="center">
+              <v-icon :color="colonyIconColor" style="padding-left: 30px">{{
+                colonyIcon
+              }}</v-icon>
             </v-col>
           </v-row>
           <v-row>
@@ -40,10 +38,11 @@
           </v-row>
           <v-row>
             <v-col offset-md="4">
-              <v-btn :color=colonyIconColor dark @click="operationColony"> {{colonyStatusButton}} </v-btn>
+              <v-btn color="primary" dark @click="operationColony">
+                {{ colonyStatusButton }}
+              </v-btn>
             </v-col>
           </v-row>
-
         </v-container>
       </v-card>
       <v-divider vertical></v-divider>
@@ -56,24 +55,34 @@
             padding-right: 10%;
           "
         >
-          <v-row justify="center" style="padding-top: 30px">
-            <v-text-field label="File Src" style="width: 200px" v-model="fileSrc"> </v-text-field>
+          <v-row  no-gutters justify="center" style="padding-top: 30px">
+            <v-col  cols="10">
+              <v-text-field
+                label="File Src"
+                v-model="fileSrc"
+                append-outer-icon="mdi-send"
+                @click:append-outer="getFileList"
+              >
+              </v-text-field>
+            </v-col>
+            <v-col align-self="center">
+              <v-btn>
+                <v-icon>
+                  mdi-cloud-upload
+                </v-icon>
+              </v-btn>
+            </v-col>
           </v-row>
           <v-row justify="center" style="margin-top: 50px">
-            <v-col cols="8">
+            <v-col>
               <v-data-table
-                v-model="selected"
                 :headers="items.headers"
                 :items="items.data"
                 item-key="name"
+                dense
+                show-select
               >
               </v-data-table>
-            </v-col>
-            <v-col>
-              <v-divider vertical></v-divider>
-            </v-col>
-            <v-col>
-              <p>hello</p>
             </v-col>
           </v-row>
         </v-card>
@@ -95,7 +104,7 @@ export default {
     colonyIcon: 'mdi-check-circle-outline',
     colonyIconColor: '',
     items: {
-      headers:[
+      headers: [
         {
           text: 'Name',
           value: 'pathSuffix'
@@ -105,17 +114,24 @@ export default {
           value: 'owner'
         },
         {
-          text: 'Size',
-          value: 'owner'
+          text: 'Group',
+          value: 'group'
+        },
+        {
+          text: 'Permission',
+          value: 'permission'
+        },
+        {
+          text: 'BlockSize',
+          value: 'blockSize'
         },
         {
           text: 'Replication',
           value: 'replication'
         }
 
-      ]
-      ,
-      data:[
+      ],
+      data: [
 
       ]
     }
@@ -123,48 +139,58 @@ export default {
   }),
   mounted () {
     this.nameNodeName = this.$route.params.key
+    this.updateColony()
     this.init()
   },
   methods: {
     init () {
+      this.getFileList()
+    },
+    operationColony () {
       if (this.colonyOperationStatus === 'start') {
-        this.getFileList()
-      }
-    },
-    operationColony(){
-      if(this.colonyOperationStatus === "start"){
-        this.$axios.put('/api/v1/colonyOperation/colony?operation=stop').then(res => {
-          this.colonyStatusButton = '启动集群'
-          this.colonyOperationStatus = "stop"
+        this.$axios.put('/api/v1/colonyOperation/colony/stop').then(res => {
+          this.colonyStatus = res.data.data
+          console.log(this.colonyStatus)
+          this.updateColonyStatus()
+          // setTimeout(()=> this.getFileList(),1000)
         })
-      } else if(this.colonyOperationStatus === "stop"){
-        this.$axios.put('/api/v1/colonyOperation/colony?operation=start').then(res => {
-          this.colonyStatusButton = '关闭集群'
-          this.colonyOperationStatus = "start"
-          this.colonyStatus = 'alive'
-        })
-      }
-      this.updateColonyStatus()
-    },
-    getFileList(){
-      if (this.colonyStatus === "start"){
-        this.$axios.get('/api/v1/colonyOperation/file').then(res => {
-          console.log(res)
-          this.items.data = res.data
+      } else if (this.colonyOperationStatus === 'stop') {
+        this.$axios.put('/api/v1/colonyOperation/colony/start').then(res => {
+          this.colonyStatus = res.data.data
+          console.log(this.colonyStatus)
+          this.updateColonyStatus()
+          // setTimeout(()=> this.getFileList(),1000)
         })
       }
     },
-    updateColonyStatus(){
-      if (this.colonyStatus === "stop") {
-        this.colonyIconColor = 'red'
-      }else if (this.colonyStatus === "alive"){
+    getFileList () {
+        this.$axios.put('/api/v1/colonyOperation/file?fileAddr='+this.fileSrc).then(res => {
+          console.log(res.data.data)
+          this.items.data = res.data.data
+      })
+    },
+    updateColony () {
+      this.$axios.get('/api/v1/colonyOperation/colony').then(res => {
+        this.colonyStatus = res.data.data
+        this.updateColonyStatus()
+      })
+    },
+    updateColonyStatus () {
+      if (this.colonyStatus === 'stop') {
+        this.colonyIconColor = ''
+        this.colonyStatusButton = '启动集群'
+        this.colonyOperationStatus = 'stop'
+      } else if (this.colonyStatus === 'alive') {
         this.colonyIconColor = 'primary'
-      }else if (this.colonyStatus === "error"){
-
-      }else if (this.colonyStatus=== "warning"){
+        this.colonyStatusButton = '关闭集群'
+        this.colonyOperationStatus = 'start'
+      } else if (this.colonyStatus === 'error') {
+        this.colonyIconColor = 'red'
+        this.colonyStatusButton = '启动集群'
+      } else if (this.colonyStatus === 'warning') {
 
       }
-    }
+    },
   }
 }
 </script>

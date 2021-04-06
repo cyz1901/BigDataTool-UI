@@ -1,6 +1,6 @@
 <template>
-    <v-container>
-      <v-col>
+  <v-container>
+    <v-col>
       <v-row>
         <v-card color="grey darken-4">
           <v-chart class="chart" :option="option" />
@@ -17,8 +17,8 @@
           <v-chart class="chart" :option="option" />
         </v-card>
       </v-row>
-      </v-col>
-    </v-container>
+    </v-col>
+  </v-container>
 </template>
 
 <script>
@@ -58,7 +58,7 @@ export default {
       option: {
         title: {
           text: '内存监控',
-          x:'center'
+          x: 'center'
         },
         xAxis: {
           type: 'category',
@@ -69,17 +69,17 @@ export default {
         },
         series: [
           {
-            name:'富国',
-            type:'line',
+            name: '富国',
+            type: 'line',
             stack: '总量',
-            data:[120, 132, 101, 134],
-        },
-        {
-            name:'易方达',
-            type:'line',
+            data: [120, 132, 101, 134]
+          },
+          {
+            name: '易方达',
+            type: 'line',
             stack: '总量',
-            data:[220, 182, 191, 234],
-        },
+            data: [220, 182, 191, 234]
+          }
         ]
       }
     }
