@@ -3,7 +3,7 @@
     <v-navigation-drawer app>
       <v-list-item style="height: 48px">
         <v-list-item-avatar width="30px" @click="tologin">
-          <v-img src="https://randomuser.me/api/portraits/women/85.jpg"></v-img>
+          <v-img :src="require('@/assets/head.png')"></v-img>
         </v-list-item-avatar>
       </v-list-item>
 
@@ -66,8 +66,8 @@ export default {
     selectedItem: 0,
     tree: [],
     items: [
-      { title: '集群', icon: 'iconfont icon-colony', herf: '/clustersView' },
-      { title: '设置', icon: 'iconfont icon-ziyuan', herf: '/settingView' },
+      { title: '集群', icon: 'iconfont icon-colony', herf: '/clustersView' }
+      // { title: '设置', icon: 'iconfont icon-ziyuan', herf: '/settingView' },
     ],
     footerItems: 'mdi-check-circle-outline',
     right: null

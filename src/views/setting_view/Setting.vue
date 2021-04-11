@@ -1,6 +1,6 @@
 <template>
   <v-container style="height: 100%; width: 80%">
-    <v-card>
+    <v-card style="padding: 30px">
       <v-form ref="settingForm">
         <v-row
           align="start"
@@ -18,9 +18,9 @@
           </v-col>
         </v-row>
       </v-form>
-      <v-btn>
-        Save
-      </v-btn>
+      <v-row justify="center">
+        <v-btn @click="updateSetting"> Save </v-btn>
+      </v-row>
     </v-card>
   </v-container>
 </template>
@@ -39,7 +39,15 @@ export default {
   }),
   methods: {
     init () {
-      this.$axios.get('/api/v1/setting').then(res => {
+      this.getSetting()
+    },
+    updateSetting () {
+      this.$axios.post('/api/v1/setting/update', this.settingForm.data).then(res => {
+        this.getSetting()
+      })
+    },
+    getSetting () {
+      this.$axios.get('/api/v1/setting/get').then(res => {
         console.log(res.data.data)
         this.settingForm.data = res.data.data
       })

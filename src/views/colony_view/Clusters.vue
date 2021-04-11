@@ -8,7 +8,14 @@
       style="height: 49px"
     >
       <!--Dialog      -->
-      <v-btn color="primary" dark @click="onNewClusters" :disabled="buttonDisabled"> 新建一个集群 </v-btn>
+      <v-btn
+        color="primary"
+        dark
+        @click="onNewClusters"
+        :disabled="buttonDisabled"
+      >
+        新建一个集群
+      </v-btn>
     </v-app-bar>
     <v-container fluid>
       <!--Card        -->
@@ -75,22 +82,11 @@ export default {
     onNewClusters () {
       this.$router.replace({ name: 'colonydeploy' })
     },
-
-    // onDetailCluster (card) {
-    //   console.log(window.location.href)
-    //   this.$router.replace({ name: 'colonyMonitor' })
-    // },
     onColonyOperation (card) {
       console.log(card.nameNodeName)
       this.$router.push({ name: 'colonyOperation', params: { key: card.nameNodeName } })
     },
     init () {
-      // if (this.clusterSign === true) {
-      //   console.log('tr')
-      // } else {
-      //   console.log('fa')
-      //   this.$router.replace({ name: 'clustersHelp' })
-      // }
       this.$axios.get('/api/v1/clusters').then(res => {
         _this.clustersData = res.data.data.map(x => {
           return {
@@ -99,7 +95,7 @@ export default {
             flex: 3
           }
         })
-        if (_this.clustersData.length !== 0){
+        if (_this.clustersData.length !== 0) {
           _this.buttonDisabled = true
         }
       })

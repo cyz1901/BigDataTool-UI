@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col>
-        <h6>总下载进度 {{nowlDownloadSize}}/{{totalDownloadSize}}</h6>
+        <h6>总进度 {{nowlDownloadSize}}/{{totalDownloadSize}}</h6>
         <v-progress-linear :value="nowlDownloadSize/totalDownloadSize * 100"
                            style="width: 70%">
         </v-progress-linear>

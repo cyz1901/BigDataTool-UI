@@ -14,7 +14,6 @@ import Login from '@/views/login_view/Login'
 import ColonyMonitor from '@/views/colony_view/ColonyMonitor'
 import ColonyOperation from '@/views/colony_view/ColonyOperation'
 
-
 Vue.use(Router)
 
 const routes = [
@@ -67,8 +66,9 @@ const routes = [
         path: '/webtest',
         name: 'webtest',
         component: webtest
-      },
-      {
+      }
+      // TODO 等在下一版本
+      /*       {
         path: '/settingView',
         component: SettingView,
         children: [
@@ -78,7 +78,7 @@ const routes = [
             component: Setting
           }
         ]
-      }
+      } */
     ]
   },
   {

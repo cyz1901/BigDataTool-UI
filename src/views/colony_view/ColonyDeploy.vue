@@ -81,11 +81,19 @@
             </template>
           </v-data-table>
           <h3>选择部署方式</h3>
-          <v-select style="width: 30%" :items="deploySelect.deployWay">
+          <v-select @change="showFile" style="width: 30%" :items="deploySelect.deployWay" v-model="deployRequest.deployWay">
           </v-select>
           <h3>选择部署类型</h3>
           <v-select style="width: 30%" :items="deploySelect.deployType">
           </v-select>
+          <template v-if="deployDistributeShow" s>
+            <h3>选择分发的文件</h3>
+            <v-file-input
+              v-model="fileUpload"
+              label="分发组件选择"
+              style="width: 30%"
+            ></v-file-input>
+          </template>
         </v-card-text>
       </v-card>
       <v-btn color="primary" @click="componentNext" class="button">
@@ -97,7 +105,7 @@
     </v-stepper-content>
 
     <v-stepper-step :complete="step > 4" step="4">
-      下载并分发组件
+      下载或分发组件
     </v-stepper-step>
     <v-stepper-content step="4">
       <v-card color="grey darken-4" class="mb-12">
@@ -109,7 +117,7 @@
                 width="150px"
                 style="margin-bottom: 20px"
               >
-                下载
+                {{deployBtnName}}
               </v-btn>
             </v-row>
             <v-row>
@@ -130,7 +138,7 @@
                       :key="node.name"
                     >
                       <v-container>
-                        <h6>{{ node.name }}下载进度</h6>
+                        <h6>{{ node.name }}{{deployRequest.deployWay}}进度</h6>
                         <v-progress-linear
                           color="progressColor(node.status)"
                           style="width: 90%"
@@ -219,6 +227,7 @@ export default {
       componentJs: {},
       nodes: [],
       deployProgress: 0,
+      deployBtnName: '',
       colonyInitForm: {
         name: '',
         nodeList: []
@@ -325,10 +334,13 @@ export default {
       ],
       deployRequest: {
         colonyName: '',
+        deployWay: '',
         deployType: '',
         nodeData: [],
         componentData: []
       },
+      fileUpload: null,
+      deployDistributeShow: false,
       deployButtonData: '部署',
       deployButtonDisabled: false,
       deployButtonLoading: false
@@ -360,14 +372,17 @@ export default {
     nodeTypeBack () {
       this.step = 1
     },
+    showFile(){
+      console.log(this.deployRequest.deployWay)
+      if (this.deployRequest.deployWay === '下载'){
+          this.deployDistributeShow = false
+      }else if (this.deployRequest.deployWay === '分发') {
+          this.deployDistributeShow = true
+      }
+    },
     componentNext () {
       this.step = 4
       // 完成后可以下一步
-      // this.componentDownloadMsg = this.componentMsg.data.filter(function (value) {
-      //   if (value.choose === true) {
-      //     return value
-      //   }
-      // })
       this.componentDownloadRequest = this.componentMsg.data.map(function (value) {
         if (value.choose === true) {
           return {
@@ -376,6 +391,21 @@ export default {
           }
         }
       })
+      var formData = new window.FormData();
+      formData.append('fileUpload',this.fileUpload)
+      this.$axios.post('/api/v1/colony/file',formData,{
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(res => {
+
+      })
+      console.log(this.fileUpload)
+      if (this.deployRequest.deployWay === '下载'){
+        this.deployBtnName = '下载'
+      }else {
+        this.deployBtnName = '分发'
+      }
     },
     componentBack () {
       this.step = 2
@@ -395,30 +425,59 @@ export default {
         return 'red'
       }
     },
+    showDeployWay () {
+
+    },
     downloadComponent () {
       let resData
-      // 执行下载操作
-      let ws = new WebSocket('ws://localhost:8000/api/websocket/download')
-      // 连接建立时触发
-      ws.onopen = function () {
-        // 使用连接发送数据
-        ws.send(JSON.stringify(_this.componentDownloadRequest))
-      }
-      ws.onmessage = function (res) {
-        resData = JSON.parse(res.data)
-        console.log(resData)
-        if (resData.status === 'run') {
-          _this.DownloadMsg.nodeData = resData.listDataList
-          _this.DownloadMsg.allData = resData.allData
-          console.log(_this.DownloadMsg.nodeData)
-        } else if (resData.status === 'error') {
+      // 判断是下载还是分发
+      if (this.deployRequest.deployWay === '下载'){
+        // 执行下载操作
+        let ws = new WebSocket('ws://localhost:8000/api/websocket/download')
+        // 连接建立时触发
+        ws.onopen = function () {
+          // 使用连接发送数据
+          ws.send(JSON.stringify(_this.componentDownloadRequest))
+        }
+        ws.onmessage = function (res) {
+          resData = JSON.parse(res.data)
+          console.log(resData)
+          if (resData.status === 'run') {
+            _this.DownloadMsg.nodeData = resData.listDataList
+            _this.DownloadMsg.allData = resData.allData
+            console.log(_this.DownloadMsg.nodeData)
+          } else if (resData.status === 'error') {
 
-        } else if (resData.status === 'finish') {
-          ws.close()
-          alert('连接已关闭...')
+          } else if (resData.status === 'finish') {
+            ws.close()
+            alert('连接已关闭...')
+          }
+        }
+      }else if(this.deployRequest.deployWay === '分发'){
+        // 执行下载操作
+        let ws = new WebSocket('ws://localhost:8000/api/websocket/distribute')
+        // 连接建立时触发
+        ws.onopen = function () {
+          // 使用连接发送数据
+          ws.send(JSON.stringify(_this.componentDownloadRequest))
+        }
+        ws.onmessage = function (res) {
+          resData = JSON.parse(res.data)
+          console.log(resData)
+          if (resData.status === 'run') {
+            _this.DownloadMsg.nodeData = resData.listDataList
+            _this.DownloadMsg.allData = resData.allData
+            console.log(_this.DownloadMsg.nodeData)
+          } else if (resData.status === 'error') {
+
+          } else if (resData.status === 'finish') {
+            ws.close()
+            alert('连接已关闭...')
+          }
         }
       }
     },
+
     deploy () {
       if (this.deployButtonData === '部署') {
         // 按钮效果

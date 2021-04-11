@@ -10,13 +10,15 @@
       <v-container>
         <v-row>
           <v-col offset-md="10">
-            <v-btn color="primary" dark> HadoopWebUI </v-btn>
+            <v-btn color="primary" dark @click="colonyUi"> HadoopWebUI </v-btn>
           </v-col>
         </v-row>
       </v-container>
     </v-app-bar>
     <div style="display: flex; margin: 20px">
-      <v-card style="width: 30%; height: 100%; margin-right: 10px;margin-top: 12px">
+      <v-card
+        style="width: 30%; height: 100%; margin-right: 10px; margin-top: 12px"
+      >
         <v-container style="margin-top: 30px">
           <v-row>
             <v-col cols="2" offset-md="1">
@@ -55,8 +57,8 @@
             padding-right: 10%;
           "
         >
-          <v-row  no-gutters justify="center" style="padding-top: 30px">
-            <v-col  cols="10">
+          <v-row no-gutters justify="center" style="padding-top: 30px">
+            <v-col cols="10">
               <v-text-field
                 label="File Src"
                 v-model="fileSrc"
@@ -67,9 +69,7 @@
             </v-col>
             <v-col align-self="center">
               <v-btn>
-                <v-icon>
-                  mdi-cloud-upload
-                </v-icon>
+                <v-icon> mdi-cloud-upload </v-icon>
               </v-btn>
             </v-col>
           </v-row>
@@ -82,6 +82,9 @@
                 dense
                 show-select
               >
+                <template v-slot:item.pathSuffix="{ item }" v-if="showa">
+                  <a @click="ll(item)">{{ item.pathSuffix }}</a>
+                </template>
               </v-data-table>
             </v-col>
           </v-row>
@@ -97,6 +100,7 @@ export default {
   data: () => ({
     nameNodeName: '',
     fileSrc: '/',
+    showa: true,
     selectedItem: 1,
     colonyStatus: 'stop',
     colonyOperationStatus: 'stop',
@@ -164,9 +168,16 @@ export default {
       }
     },
     getFileList () {
-        this.$axios.put('/api/v1/colonyOperation/file?fileAddr='+this.fileSrc).then(res => {
-          console.log(res.data.data)
-          this.items.data = res.data.data
+      this.$axios.put('/api/v1/colonyOperation/file?fileAddr=' + this.fileSrc).then(res => {
+        console.log(res.data.data)
+        this.items.data = res.data.data
+        this.items.data.map(x => {
+          if (x.type === 'DIRECTORY') {
+            this.showa = true
+          } else {
+            this.showa = false
+          }
+        })
       })
     },
     updateColony () {
@@ -191,6 +202,26 @@ export default {
 
       }
     },
+    // todo if 文件夹则可以点下去
+    ll (item) {
+      this.fileSrc = this.fileSrc + '/' + item.pathSuffix
+      this.$axios.put('/api/v1/colonyOperation/file?fileAddr=' + this.fileSrc).then(res => {
+        if (res.status !== 500) {
+          // this.fileSrc = this.fileSrc + item.pathSuffix
+          this.items.data = res.data.data
+          this.items.data.map(x => {
+            if (x.type === 'DIRECTORY') {
+              this.showa = true
+            } else {
+              this.showa = false
+            }
+          })
+        }
+      })
+    },
+    colonyUi () {
+      window.open('http://localhost:9870/dfshealth.html#tab-overview')
+    }
   }
 }
 </script>
