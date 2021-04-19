@@ -32,34 +32,8 @@
       </v-btn>
     </v-stepper-content>
 
-    <v-stepper-step :complete="step > 2" step="2">
-      配置节点类型
-    </v-stepper-step>
+    <v-stepper-step :complete="step > 2" step="2"> 选择组件 </v-stepper-step>
     <v-stepper-content step="2">
-      <v-card color="grey darken-4" class="card">
-        <v-card-text>
-          <form ref="nodeTypeForm">
-            <h3>选择NameNode的节点</h3>
-            <v-select
-              label="NameNode"
-              :items="nodes"
-              item-text="hostname"
-              v-model="nodesMsg.nameNode"
-              chips
-              persistent-hint
-              style="width: 30%"
-            ></v-select>
-          </form>
-        </v-card-text>
-      </v-card>
-      <v-btn color="primary" @click="nodeTypeNext" class="button"> 继续 </v-btn>
-      <v-btn color="secondary" class="button" @click="nodeTypeBack">
-        上一步
-      </v-btn>
-    </v-stepper-content>
-
-    <v-stepper-step :complete="step > 3" step="3"> 选择组件 </v-stepper-step>
-    <v-stepper-content step="3">
       <v-card color="grey darken-4" class="mb-12">
         <v-card-text>
           <h3>选择需要部署的组件</h3>
@@ -81,12 +55,22 @@
             </template>
           </v-data-table>
           <h3>选择部署方式</h3>
-          <v-select @change="showFile" style="width: 30%" :items="deploySelect.deployWay" v-model="deployRequest.deployWay">
+          <v-select
+            @change="showFile"
+            style="width: 30%"
+            :items="deploySelect.deployWay"
+            v-model="deployRequest.deployWay"
+          >
           </v-select>
           <h3>选择部署类型</h3>
-          <v-select style="width: 30%" :items="deploySelect.deployType">
+          <v-select
+            @change="showSecondaryNameNode"
+            style="width: 30%"
+            :items="deploySelect.deployType"
+            v-model="deployRequest.deployType"
+          >
           </v-select>
-          <template v-if="deployDistributeShow" s>
+          <template v-if="deployDistributeShow">
             <h3>选择分发的文件</h3>
             <v-file-input
               v-model="fileUpload"
@@ -96,7 +80,13 @@
           </template>
         </v-card-text>
       </v-card>
-      <v-btn color="primary" @click="componentNext" class="button">
+      <v-btn
+        color="primary"
+        :loading="componentNextButtonLoading"
+        :disabled="componentNextButtonDisabled"
+        @click="componentNext"
+        class="button"
+      >
         继续
       </v-btn>
       <v-btn color="secondary" @click="componentBack" class="button">
@@ -104,6 +94,43 @@
       </v-btn>
     </v-stepper-content>
 
+    <v-stepper-step :complete="step > 3" step="3">
+      配置节点类型
+    </v-stepper-step>
+    <v-stepper-content step="3">
+      <v-card color="grey darken-4" class="card">
+        <v-card-text>
+          <form ref="nodeTypeForm">
+            <h3>选择NameNode的节点</h3>
+            <v-select
+              label="NameNode"
+              :items="nodes"
+              item-text="hostname"
+              v-model="nodesMsg.nameNode"
+              chips
+              persistent-hint
+              style="width: 30%"
+            ></v-select>
+            <template v-if="secondaryNameNodeShow">
+              <h3>选择SecondaryNameNode的节点</h3>
+              <v-select
+                label="SecondaryNameNode"
+                :items="nodes"
+                item-text="hostname"
+                v-model="nodesMsg.secondaryNameNode"
+                chips
+                persistent-hint
+                style="width: 30%"
+              ></v-select>
+            </template>
+          </form>
+        </v-card-text>
+      </v-card>
+      <v-btn color="primary" @click="nodeTypeNext" class="button"> 继续 </v-btn>
+      <v-btn color="secondary" class="button" @click="nodeTypeBack">
+        上一步
+      </v-btn>
+    </v-stepper-content>
     <v-stepper-step :complete="step > 4" step="4">
       下载或分发组件
     </v-stepper-step>
@@ -117,7 +144,7 @@
                 width="150px"
                 style="margin-bottom: 20px"
               >
-                {{deployBtnName}}
+                {{ deployBtnName }}
               </v-btn>
             </v-row>
             <v-row>
@@ -129,7 +156,7 @@
                       :nowlDownloadSize="DownloadMsg.allData.nowlDownloadSize"
                       :totalDownloadSize="DownloadMsg.allData.totalDownloadSize"
                       :nowComponents="DownloadMsg.allData.nowComponents"
-                      :totalComponents="DownloadMsg.allData.totalDownloadSize"
+                      :totalComponents="DownloadMsg.allData.totalComponents"
                     ></download-progress>
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
@@ -138,7 +165,9 @@
                       :key="node.name"
                     >
                       <v-container>
-                        <h6>{{ node.name }}{{deployRequest.deployWay}}进度</h6>
+                        <h6>
+                          {{ node.name }}{{ deployRequest.deployWay }}进度
+                        </h6>
                         <v-progress-linear
                           color="progressColor(node.status)"
                           style="width: 90%"
@@ -213,6 +242,7 @@
 
 <script>
 import DownloadProgress from '@/components/DownloadProgress'
+import { conversion } from '@/utils/calculation'
 var _this
 export default {
 
@@ -255,7 +285,8 @@ export default {
         ],
         data: [
         ],
-        nameNode: ''
+        nameNode: '',
+        secondaryNameNode: ''
       },
       componentMsg: {
         header: [
@@ -283,7 +314,8 @@ export default {
         data: [
         ]
       },
-      componentDownloadRequest: [],
+      componentDownloadRequest: '',
+      componentDistribute: null,
       DownloadMsg: {
         allData: {
           totalComponents: 0,
@@ -341,9 +373,12 @@ export default {
       },
       fileUpload: null,
       deployDistributeShow: false,
+      secondaryNameNodeShow: false,
       deployButtonData: '部署',
       deployButtonDisabled: false,
-      deployButtonLoading: false
+      deployButtonLoading: false,
+      componentNextButtonDisabled: false,
+      componentNextButtonLoading: false
     }
   },
   mounted () {
@@ -365,23 +400,7 @@ export default {
         }
       })
     },
-    nodeTypeNext () {
-      // 发送namenode信息
-      this.step = 3
-    },
-    nodeTypeBack () {
-      this.step = 1
-    },
-    showFile(){
-      console.log(this.deployRequest.deployWay)
-      if (this.deployRequest.deployWay === '下载'){
-          this.deployDistributeShow = false
-      }else if (this.deployRequest.deployWay === '分发') {
-          this.deployDistributeShow = true
-      }
-    },
     componentNext () {
-      this.step = 4
       // 完成后可以下一步
       this.componentDownloadRequest = this.componentMsg.data.map(function (value) {
         if (value.choose === true) {
@@ -391,25 +410,56 @@ export default {
           }
         }
       })
-      var formData = new window.FormData();
-      formData.append('fileUpload',this.fileUpload)
-      this.$axios.post('/api/v1/colony/file',formData,{
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }).then(res => {
-
-      })
       console.log(this.fileUpload)
-      if (this.deployRequest.deployWay === '下载'){
+      if (this.deployRequest.deployWay === '下载') {
         this.deployBtnName = '下载'
-      }else {
+        this.step = 3
+      } else if (this.deployRequest.deployWay === '分发') {
         this.deployBtnName = '分发'
+        this.componentNextButtonLoading = true
+        this.componentNextButtonDisabled = true
+        var formData = new window.FormData()
+        if (this.fileUpload !== null) {
+          formData.append('fileUpload', this.fileUpload)
+          this.componentDistribute = this.fileUpload.name
+        }
+        this.$axios.post('/api/v1/colony/file', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then(res => {
+          _this.componentNextButtonDisabled = false
+          _this.componentNextButtonLoading = false
+          this.step = 3
+        })
       }
     },
     componentBack () {
+      this.step = 1
+    },
+    nodeTypeNext () {
+      // 发送namenode信息
+      this.step = 4
+    },
+    nodeTypeBack () {
       this.step = 2
     },
+    showSecondaryNameNode () {
+      if (this.deployRequest.deployType === '单机') {
+        this.secondaryNameNodeShow = false
+      } else if (this.deployRequest.deployType === '分布式') {
+        this.secondaryNameNodeShow = true
+      }
+    },
+
+    showFile () {
+      if (this.deployRequest.deployWay === '下载') {
+        this.deployDistributeShow = false
+      } else if (this.deployRequest.deployWay === '分发') {
+        this.deployDistributeShow = true
+      }
+    },
+
     downloadNext () {
       this.step = 5
       // 执行各种命令 websocket 解压 改配置文件 初始化namenode 群起集群
@@ -431,7 +481,7 @@ export default {
     downloadComponent () {
       let resData
       // 判断是下载还是分发
-      if (this.deployRequest.deployWay === '下载'){
+      if (this.deployRequest.deployWay === '下载') {
         // 执行下载操作
         let ws = new WebSocket('ws://localhost:8000/api/websocket/download')
         // 连接建立时触发
@@ -449,17 +499,19 @@ export default {
           } else if (resData.status === 'error') {
 
           } else if (resData.status === 'finish') {
+            _this.DownloadMsg.nodeData = resData.listDataList
+            _this.DownloadMsg.allData = resData.allData
+            console.log(_this.DownloadMsg.nodeData)
             ws.close()
-            alert('连接已关闭...')
           }
         }
-      }else if(this.deployRequest.deployWay === '分发'){
+      } else if (this.deployRequest.deployWay === '分发') {
         // 执行下载操作
         let ws = new WebSocket('ws://localhost:8000/api/websocket/distribute')
         // 连接建立时触发
         ws.onopen = function () {
           // 使用连接发送数据
-          ws.send(JSON.stringify(_this.componentDownloadRequest))
+          ws.send(JSON.stringify(_this.componentDistribute))
         }
         ws.onmessage = function (res) {
           resData = JSON.parse(res.data)
@@ -471,8 +523,10 @@ export default {
           } else if (resData.status === 'error') {
 
           } else if (resData.status === 'finish') {
+            _this.DownloadMsg.nodeData = resData.listDataList
+            _this.DownloadMsg.allData = resData.allData
+            console.log(_this.DownloadMsg.nodeData)
             ws.close()
-            alert('连接已关闭...')
           }
         }
       }
@@ -497,10 +551,9 @@ export default {
         })
         console.log(this.deployRequest.nodeData)
         this.deployRequest.componentData = this.componentDownloadRequest
-        // this.deployRequest.componentData.map((value, index) => {
-        //   delete value.des
-        //   delete value.choose
-        // })
+        this.deployRequest.nameNode = this.nodesMsg.nameNode
+        this.deployRequest.secondaryNameNode = this.nodesMsg.secondaryNameNode
+
         // 执行部署操作
         let ws = new WebSocket('ws://localhost:8000/api/websocket/deploy')
         // 连接建立时触发
@@ -556,6 +609,10 @@ export default {
       } else {
         return 'mdi-checkbox-marked-circle'
       }
+    },
+    conversionKb (param) {
+      let a = conversion(param)
+      return a
     }
   }
 }
